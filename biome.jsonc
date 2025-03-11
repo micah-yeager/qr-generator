@@ -1,0 +1,86 @@
+{
+  "$schema": "node_modules/@biomejs/biome/configuration_schema.json",
+  // Global configuration.
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "linter": {
+    "rules": {
+      "all": true,
+      "correctness": {
+        // Still required for now.
+        "noNodejsModules": "off",
+        // No support for TypeScript aliases yet.
+        "noUndeclaredDependencies": "off",
+        // Since we're using a bundler, this is unnecessary.
+        "useImportExtensions": "off"
+      },
+      "nursery": {},
+      "performance": {
+        // Since we're using a bundler, this is unnecessary.
+        "noBarrelFile": "off",
+        // Since we're using a bundler, this is unnecessary.
+        "noReExportAll": "off"
+      },
+      "style": {
+        // Required for Remix.
+        "noDefaultExport": "off",
+        // Requires more boilerplate for no real readability benefit.
+        "noImplicitBoolean": "off",
+        // Helpful for some libraries, e.g. Node built-ins.
+        "noNamespaceImport": "off",
+        // Requires more boilerplate for no real readability benefit.
+        "useBlockStatements": "off",
+        // Requires more boilerplate in some instances for no real readability
+        // benefit.
+        "useCollapsedElseIf": "off",
+        // Requires more boilerplate for no real readability benefit.
+        "useExplicitLengthCheck": "off",
+        // While `for...of` is more readable, it's sometimes substantially slower
+        // than an index-based loop.
+        "useForOf": "off",
+        // React often uses non-standard naming, e.g. in component properties.
+        "useNamingConvention": "off",
+        // Conflicts with some Remix route conventions.
+        "useFilenamingConvention": "off"
+      },
+      "suspicious": {
+        // Async functions without `await` are still useful, since exceptions
+        // reject the promise instead of being synchronously thrown.
+        "useAwait": "off",
+        // We're using React.
+        "noReactSpecificProps": "off",
+        // Console logging is useful in production, too.
+        "noConsole": "off"
+      }
+    }
+  },
+  "organizeImports": {},
+  // Project configuration.
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  // Language configuration.
+  "css": {
+    "formatter": {
+      "enabled": true
+    },
+    "linter": {
+      "enabled": true
+    },
+    "parser": {
+      "cssModules": true
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "semicolons": "asNeeded"
+    }
+  },
+  "json": {
+    "formatter": {}
+  }
+}

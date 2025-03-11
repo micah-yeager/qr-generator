@@ -1,0 +1,24 @@
+# top-most EditorConfig file
+root = true
+
+[*]
+# De facto modern file encoding standard.
+charset = utf-8
+# Make line endings the same type, regardless of operating system.
+end_of_line = lf
+# Better flexibility for more screen sizes and layouts.
+max_line_length = 80
+# Give more vertical space to the end-of-file for legibility.
+insert_final_newline = true
+# Remove unnecessary whitespace at the end of lines.
+trim_trailing_whitespace = true
+# Greater flexibility over horizontal alignment, where applicable.
+indent_style = space
+# Minimized horizontal space.
+indent_size = 2
+
+[{*.md,*.mdx}]
+# Allow auto-formatting of Markdown files without breaking nested lists.
+indent_size = unset
+# Keep whitespace, so formatting doesn't break in some niche circumstances.
+trim_trailing_whitespace = false
