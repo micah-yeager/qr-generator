@@ -102,7 +102,7 @@ export default function Home() {
 
   const qrCodeRef = useRef<SVGSVGElement>(null)
 
-  // Reset `showCopied` after several seconds.
+  // Reset `showCopied` after being enabled.
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => {
     if (!showCopied) return
