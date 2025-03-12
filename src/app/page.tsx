@@ -150,6 +150,7 @@ export default function Home() {
     return { serialized, dataString }
   }, [border])
 
+  // This function cannot be async due to restrictions within Safari.
   const copyQRCode = useCallback((): Promise<void> => {
     const { serialized, dataString } = serializeSVG()
 
