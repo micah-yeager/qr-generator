@@ -47,6 +47,31 @@ const SIZES = new Map([
 ] as const) satisfies Map<number, { isDefault?: boolean }>
 type Size = Entries<typeof SIZES>[1][0]
 
+function addQRCodeBorder(svg: SVGSVGElement): void {
+  // Round up to avoid inadvertently rounding to zero.
+  const borderSize = Math.ceil(svg.viewBox.baseVal.width * BORDER_RATIO)
+  const newViewBoxSize = borderSize * 2 + svg.viewBox.baseVal.width
+  svg.viewBox.baseVal.width = newViewBoxSize
+  svg.viewBox.baseVal.height = newViewBoxSize
+
+  // Translate all path children.
+  const transform = svg.createSVGTransform()
+  transform.setTranslate(borderSize, borderSize)
+  for (const child of svg.children) {
+    if (child.tagName !== "path") continue
+    const child_ = child as SVGPathElement
+    child_.transform.baseVal.appendItem(transform)
+  }
+
+  // Add white background for visibility.
+  const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect")
+  // `2` represents percentages.
+  bg.width.baseVal.newValueSpecifiedUnits(2, 100)
+  bg.height.baseVal.newValueSpecifiedUnits(2, 100)
+  bg.style.fill = "#ffffff"
+  svg.prepend(bg)
+}
+
 function saveFile(dataString: string): void {
   const downloadLink = document.createElement("a")
   document.body.appendChild(downloadLink)
@@ -67,53 +92,9 @@ export default function Home() {
 
   const qrCode = useRef<SVGSVGElement>(null)
 
-  const saveQRCode = useCallback(
-    async (to: "clipboard" | "file"): Promise<void> => {
-      if (!qrCode.current) return
-      // Clone the SVG, since we want to modify it if adding a border.
-      const svg = qrCode.current.cloneNode(true) as SVGSVGElement
-
-      // Add a border, if specified.
-      if (addBorder) {
-        // Round up to avoid inadvertently rounding to zero.
-        const borderSize = Math.ceil(svg.viewBox.baseVal.width * BORDER_RATIO)
-        const newViewBoxSize = borderSize * 2 + svg.viewBox.baseVal.width
-        svg.viewBox.baseVal.width = newViewBoxSize
-        svg.viewBox.baseVal.height = newViewBoxSize
-
-        // Translate all path children.
-        const transform = svg.createSVGTransform()
-        transform.setTranslate(borderSize, borderSize)
-        for (const child of svg.children) {
-          if (child.tagName !== "path") continue
-          const child_ = child as SVGPathElement
-          child_.transform.baseVal.appendItem(transform)
-        }
-
-        // Add white background for visibility.
-        const bg = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "rect",
-        )
-        // `2` represents percentages.
-        bg.width.baseVal.newValueSpecifiedUnits(2, 100)
-        bg.height.baseVal.newValueSpecifiedUnits(2, 100)
-        bg.style.fill = "#ffffff"
-        svg.prepend(bg)
-      }
-
-      // Serialize SVG to data string.
-      const serialized = new XMLSerializer().serializeToString(svg)
-      // Copy SVG to clipboard if selected.
-      if (format === "svg" && to === "clipboard") {
-        await navigator.clipboard.writeText(serialized)
-      }
-      // Otherwise, generate the SVG data string.
-      const dataString = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(serialized)}`
-      // Download as SVG if selected.
-      if (format === "svg") return saveFile(dataString)
-
-      // Otherwise, load the data string into an img element, ensuring loading finishes.
+  const canvasQRCode = useCallback(
+    async (dataString: string): Promise<HTMLCanvasElement> => {
+      // Load the data string into an img element.
       const svgImg = document.createElement("img")
       await new Promise<void>((resolve, reject) => {
         svgImg.onload = () => resolve()
@@ -128,6 +109,35 @@ export default function Home() {
       // biome-ignore lint/style/noNonNullAssertion: we can safely assume this will be non-null
       canvas.getContext("2d")!.drawImage(svgImg, 0, 0, size, size)
 
+      return canvas
+    },
+    [size],
+  )
+
+  const saveQRCode = useCallback(
+    async (to: "clipboard" | "file"): Promise<void> => {
+      if (!qrCode.current) return
+      // Clone the SVG, since we want to modify it if adding a border.
+      const svg = qrCode.current.cloneNode(true) as SVGSVGElement
+
+      // Add a border, if specified.
+      if (addBorder) addQRCodeBorder(svg)
+
+      // Serialize SVG to data string.
+      const serialized = new XMLSerializer().serializeToString(svg)
+      // Copy SVG to clipboard if selected.
+      if (format === "svg" && to === "clipboard") {
+        await navigator.clipboard.writeText(serialized)
+      }
+
+      // Otherwise, generate the SVG data string.
+      const dataString = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(serialized)}`
+      // Download as SVG if selected.
+      if (format === "svg") return saveFile(dataString)
+
+      // Otherwise, load the data string into a canvas for rasterization.
+      const canvas = await canvasQRCode(dataString)
+
       // Save image to clipboard if selected.
       if (to === "clipboard") {
         return canvas.toBlob((blob) => {
@@ -140,7 +150,7 @@ export default function Home() {
       // Otherwise, download the image.
       saveFile(canvas.toDataURL(`image/${format}`, 1.0))
     },
-    [format, size, addBorder],
+    [format, addBorder, canvasQRCode],
   )
 
   return (
