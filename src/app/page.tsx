@@ -215,11 +215,9 @@ export default function Home() {
           </Field>
         </FieldGroup>
 
-        <div className="flex flex-col gap-1 sm:self-center items-center">
-          <Text aria-hidden="true">Preview</Text>
-
+        <div className="w-full flex flex-col gap-2">
           {text ? (
-            <div className="p-3 bg-white rounded-md size-64">
+            <div className="p-3 bg-white rounded-md size-64 self-center">
               <QRCode
                 className="h-full w-full"
                 size={size}
@@ -230,14 +228,12 @@ export default function Home() {
               />
             </div>
           ) : (
-            <Text className="flex justify-center items-center p-2 text-center border-zinc-950/10 dark:border-white/10 border-1 border-dashed rounded-md size-64">
-              Enter text above to generate a preview.
+            <Text className="flex justify-center self-center items-center p-10 text-center border-zinc-950/10 dark:border-white/10 border-1 border-dashed rounded-md size-64">
+              Enter text above to generate the QR code.
             </Text>
           )}
-        </div>
 
-        <div className="flex flex-col w-full gap-2">
-          <div className="text-center space-x-4 *:w-32">
+          <div className="text-center space-x-2 *:w-31">
             <Button
               type="button"
               className="self-center"
