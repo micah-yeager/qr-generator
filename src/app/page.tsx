@@ -96,7 +96,7 @@ export default function Home() {
   const [addBorder, setAddBorder] = useState<boolean>(true)
   const [showCopied, setShowCopied] = useState<boolean>(false)
 
-  const qrCode = useRef<SVGSVGElement>(null)
+  const qrCodeRef = useRef<SVGSVGElement>(null)
 
   // Reset `showCopied` after several seconds.
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -132,9 +132,9 @@ export default function Home() {
     serialized: string
     dataString: string
   } => {
-    if (!qrCode.current) throw new Error("Could not find QR code")
+    if (!qrCodeRef.current) throw new Error("Could not find QR code")
     // Clone the SVG, since we want to modify it if adding a border.
-    const svg = qrCode.current.cloneNode(true) as SVGSVGElement
+    const svg = qrCodeRef.current.cloneNode(true) as SVGSVGElement
 
     // Add a border, if specified.
     if (addBorder) addQRCodeBorder(svg)
@@ -236,7 +236,7 @@ export default function Home() {
                 value={text || prevText}
                 aria-label="QR code preview."
                 // biome-ignore lint/suspicious/noExplicitAny: Cast is needed due to missing types.
-                ref={qrCode as React.RefObject<any>}
+                ref={qrCodeRef as React.RefObject<any>}
               />
             </div>
 
