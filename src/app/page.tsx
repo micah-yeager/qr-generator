@@ -209,8 +209,8 @@ export default function Home() {
               forceNotifyByEnter={true}
             />
             <Description>
-              The text to store in the QR code (e.g. a link). Shorter values are
-              easier to scan.
+              The text to store in the QR code. Shorter values are easier to
+              scan.
             </Description>
           </Field>
         </FieldGroup>
