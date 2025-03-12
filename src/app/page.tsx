@@ -33,10 +33,10 @@ import { Text } from "../components/text"
 const BORDER_RATIO = 3 / 64
 
 const FORMATS = new Map([
-  ["png", { recommended: true }],
-  ["jpeg", {}],
+  ["png", { notes: "Recommended" }],
+  ["jpeg", { notes: "Copy button unavailable" }],
   ["svg", {}],
-] as const) satisfies Map<string, { recommended?: React.ReactNode }>
+] as const) satisfies Map<string, { notes?: React.ReactNode }>
 type Format = Entries<typeof FORMATS>[1][0]
 
 const SIZES = new Map([
@@ -221,11 +221,11 @@ export default function Home() {
                 value={format}
                 onChange={(value) => setFormat(value as Format)}
               >
-                {Array.from(FORMATS).map(([format, { recommended }]) => (
+                {Array.from(FORMATS).map(([format, { notes }]) => (
                   <RadioField key={format}>
                     <Radio value={format} />
                     <Label>{format.toUpperCase()}</Label>
-                    {recommended && <Description>Recommended</Description>}
+                    {notes && <Description>{notes}</Description>}
                   </RadioField>
                 ))}
               </RadioGroup>
@@ -282,12 +282,6 @@ export default function Home() {
           {!text && (
             <Text className="text-center !text-red-600 !dark:text-red-500">
               You must enter text for the QR code above before you can save it.
-            </Text>
-          )}
-          {format === "jpeg" && (
-            <Text className="text-center !text-red-600 !dark:text-red-500">
-              JPEG images cannot be copied to the clipboard due to browser
-              limitations.
             </Text>
           )}
         </div>
