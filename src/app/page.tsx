@@ -8,6 +8,7 @@ import {
   UserIcon,
 } from "@heroicons/react/24/solid"
 import type React from "react"
+import { useEffect } from "react"
 import { useCallback } from "react"
 import { useRef } from "react"
 import { useState } from "react"
@@ -92,8 +93,17 @@ export default function Home() {
   const [format, setFormat] = useState<Format>("image/png")
   const [size, setSize] = useState<Size>(256)
   const [addBorder, setAddBorder] = useState<boolean>(true)
+  const [showCopied, setShowCopied] = useState<boolean>(false)
 
   const qrCode = useRef<SVGSVGElement>(null)
+
+  // Reset `showCopied` after several seconds.
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => {
+    if (!showCopied) return
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    timeoutRef.current = setTimeout(() => setShowCopied(false), 3_000)
+  }, [showCopied])
 
   const canvasQRCode = useCallback(
     async (dataString: string): Promise<HTMLCanvasElement> => {
@@ -154,7 +164,9 @@ export default function Home() {
           ),
       ),
     })
-    return navigator.clipboard.write([clipboardItem])
+    return navigator.clipboard
+      .write([clipboardItem])
+      .then(() => setShowCopied(true))
   }, [format, serializeSVG, canvasQRCode])
 
   const downloadQRCode = useCallback(async () => {
@@ -226,7 +238,7 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col w-full gap-2">
-          <div className="text-center space-x-4">
+          <div className="text-center space-x-4 *:w-32">
             <Button
               type="button"
               className="self-center"
@@ -234,7 +246,7 @@ export default function Home() {
               onClick={() => copyQRCode()}
             >
               <ClipboardDocumentIcon />
-              Copy
+              {showCopied ? "Copied!" : "Copy"}
             </Button>
 
             <Button
