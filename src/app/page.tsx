@@ -1,6 +1,7 @@
 "use client"
 
 import ArrowTopRightOnSquareIcon from "@heroicons/react/16/solid/ArrowTopRightOnSquareIcon"
+import ExclamationTriangleIcon from "@heroicons/react/16/solid/ExclamationTriangleIcon"
 import ArrowDownTrayIcon from "@heroicons/react/24/solid/ArrowDownTrayIcon"
 import ClipboardDocumentIcon from "@heroicons/react/24/solid/ClipboardDocumentIcon"
 import CodeBracketIcon from "@heroicons/react/24/solid/CodeBracketIcon"
@@ -36,7 +37,18 @@ const BORDER_RATIO = 3 / 64
 
 const FORMATS = new Map([
   ["image/png", { label: "PNG", notes: "Recommended" }],
-  ["image/jpeg", { label: "JPEG", notes: "Copy button unavailable" }],
+  [
+    "image/jpeg",
+    {
+      label: "JPEG",
+      notes: (
+        <>
+          <ExclamationTriangleIcon className="inline-block mb-0.5 me-0.5 size-4 text-yellow-400 dark:text-yellow-500" />{" "}
+          Copy button will be unavailable
+        </>
+      ),
+    },
+  ],
   ["image/svg+xml", { label: "SVG" }],
 ] as const) satisfies Map<
   string,
