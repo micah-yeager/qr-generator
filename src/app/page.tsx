@@ -214,10 +214,7 @@ export default function Home() {
               forceNotifyOnBlur={true}
               forceNotifyByEnter={true}
             />
-            <Description>
-              The text to store in the QR code. Shorter values are easier to
-              scan.
-            </Description>
+            <Description>The text used to generate the QR code.</Description>
           </Field>
         </FieldGroup>
 
