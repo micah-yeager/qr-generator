@@ -257,11 +257,6 @@ export default function Home() {
               Download
             </Button>
           </div>
-          {!text && (
-            <Text className="text-center !text-red-600 !dark:text-red-500">
-              You must enter text for the QR code above before you can save it.
-            </Text>
-          )}
         </div>
 
         <Divider />
