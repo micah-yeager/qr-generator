@@ -117,42 +117,55 @@ export default function Home() {
     [size],
   )
 
-  const saveQRCode = useCallback(
-    async (to: "clipboard" | "file"): Promise<void> => {
-      if (!qrCode.current) return
-      // Clone the SVG, since we want to modify it if adding a border.
-      const svg = qrCode.current.cloneNode(true) as SVGSVGElement
+  const serializeSVG = useCallback((): {
+    serialized: string
+    dataString: string
+  } => {
+    if (!qrCode.current) throw new Error("Could not find QR code")
+    // Clone the SVG, since we want to modify it if adding a border.
+    const svg = qrCode.current.cloneNode(true) as SVGSVGElement
 
-      // Add a border, if specified.
-      if (addBorder) addQRCodeBorder(svg)
+    // Add a border, if specified.
+    if (addBorder) addQRCodeBorder(svg)
 
-      // Serialize SVG to data string.
-      const serialized = new XMLSerializer().serializeToString(svg)
-      // Copy SVG to clipboard if selected.
-      if (format === "image/svg+xml" && to === "clipboard") {
-        return navigator.clipboard.writeText(serialized)
-      }
+    // Serialize SVG and convert it to a data string.
+    const serialized = new XMLSerializer().serializeToString(svg)
+    const dataString = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(serialized)}`
 
-      // Otherwise, generate the SVG data string.
-      const dataString = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(serialized)}`
-      // Download as SVG if selected.
-      if (format === "image/svg+xml") return saveFile(dataString)
+    return { serialized, dataString }
+  }, [addBorder])
 
-      // Otherwise, load the data string into a canvas for rasterization.
-      const canvas = await canvasQRCode(dataString)
+  const copyQRCode = useCallback((): Promise<void> => {
+    const { serialized, dataString } = serializeSVG()
 
-      // Save image to clipboard if selected.
-      if (to === "clipboard") {
-        return canvas.toBlob((blob) => {
-          if (!blob) throw new Error("Could not save image")
-          navigator.clipboard.write([new ClipboardItem({ [format]: blob })])
-        }, format)
-      }
-      // Otherwise, download the image.
-      saveFile(canvas.toDataURL(format, 1.0))
-    },
-    [format, addBorder, canvasQRCode],
-  )
+    // Copy SVG to clipboard if selected.
+    if (format === "image/svg+xml") {
+      return navigator.clipboard.writeText(serialized)
+    }
+
+    // Copy rasterized image blob to clipboard.
+    const clipboardItem = new ClipboardItem({
+      // Need to use a promise to properly support Safari.
+      [format]: canvasQRCode(dataString).then(
+        (canvas) =>
+          // `toBlob` callback seems to be async, so we need to wrap it in a promise.
+          new Promise<Blob>((resolve, reject) =>
+            canvas.toBlob((blob) => (blob === null ? reject() : resolve(blob))),
+          ),
+      ),
+    })
+    return navigator.clipboard.write([clipboardItem])
+  }, [format, serializeSVG, canvasQRCode])
+
+  const downloadQRCode = useCallback(async () => {
+    const { dataString } = serializeSVG()
+
+    // Download as SVG if selected.
+    if (format === "image/svg+xml") return saveFile(dataString)
+    // Load the data string into a canvas for rasterization.
+    const canvas = await canvasQRCode(dataString)
+    saveFile(canvas.toDataURL(format, 1.0))
+  }, [format, serializeSVG, canvasQRCode])
 
   return (
     <main className="flex flex-col items-center justify-items-center min-h-screen p-8 px-4 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -218,7 +231,7 @@ export default function Home() {
               type="button"
               className="self-center"
               disabled={!text || format === "image/jpeg"}
-              onClick={() => saveQRCode("clipboard")}
+              onClick={() => copyQRCode()}
             >
               <ClipboardDocumentIcon />
               Copy
@@ -228,7 +241,7 @@ export default function Home() {
               type="button"
               className="self-center"
               disabled={!text}
-              onClick={() => saveQRCode("file")}
+              onClick={() => downloadQRCode()}
             >
               <ArrowDownTrayIcon />
               Download
