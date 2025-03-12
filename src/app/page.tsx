@@ -154,7 +154,7 @@ export default function Home() {
         <div>
           <Heading>QR code generator</Heading>
           <Text>
-            Generate QR codes that don't depend on 3rd-party services.
+            Privately generate QR codes that don't depend on 3rd-party services.
           </Text>
         </div>
       </div>
@@ -162,7 +162,7 @@ export default function Home() {
       <form className="flex flex-col gap-[32px] w-full sm:max-w-[600px] row-start-2 items-center sm:items-start">
         <FieldGroup className="w-full">
           <Field className="w-full">
-            <Label>Text</Label>
+            <Label>QR code content</Label>
             <DebounceInput
               element={Input}
               placeholder="e.g. https://qr.micahyeager.com/"
@@ -231,7 +231,7 @@ export default function Home() {
         </div>
 
         <Divider />
-        <Subheading>Download options</Subheading>
+        <Subheading>Options</Subheading>
         <Text>If in doubt, you can safely leave these options alone.</Text>
         <FieldGroup className="flex flex-col w-full sm:grid grid-cols-2">
           <div className="w-full space-y-8 sm:pe-8">
