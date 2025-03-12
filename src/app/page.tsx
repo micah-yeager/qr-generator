@@ -201,6 +201,35 @@ export default function Home() {
           )}
         </div>
 
+        <div className="flex flex-col w-full gap-2">
+          <div className="text-center space-x-4">
+            <Button
+              type="button"
+              className="self-center"
+              disabled={!text || format === "jpeg"}
+              onClick={() => saveQRCode("clipboard")}
+            >
+              <ClipboardDocumentIcon />
+              Copy
+            </Button>
+
+            <Button
+              type="button"
+              className="self-center"
+              disabled={!text}
+              onClick={() => saveQRCode("file")}
+            >
+              <ArrowDownTrayIcon />
+              Download
+            </Button>
+          </div>
+          {!text && (
+            <Text className="text-center !text-red-600 !dark:text-red-500">
+              You must enter text for the QR code above before you can save it.
+            </Text>
+          )}
+        </div>
+
         <Divider />
         <Subheading>Download options</Subheading>
         <Text>If in doubt, you can safely leave these options alone.</Text>
@@ -256,35 +285,6 @@ export default function Home() {
             </Fieldset>
           )}
         </FieldGroup>
-
-        <div className="flex flex-col w-full gap-2">
-          <div className="text-center space-x-4">
-            <Button
-              type="button"
-              className="self-center"
-              disabled={!text || format === "jpeg"}
-              onClick={() => saveQRCode("clipboard")}
-            >
-              <ClipboardDocumentIcon />
-              Copy
-            </Button>
-
-            <Button
-              type="button"
-              className="self-center"
-              disabled={!text}
-              onClick={() => saveQRCode("file")}
-            >
-              <ArrowDownTrayIcon />
-              Download
-            </Button>
-          </div>
-          {!text && (
-            <Text className="text-center !text-red-600 !dark:text-red-500">
-              You must enter text for the QR code above before you can save it.
-            </Text>
-          )}
-        </div>
       </form>
 
       <footer className="space-y-4">
