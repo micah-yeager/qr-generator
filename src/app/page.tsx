@@ -33,10 +33,13 @@ import { Text } from "../components/text"
 const BORDER_RATIO = 3 / 64
 
 const FORMATS = new Map([
-  ["png", { notes: "Recommended" }],
-  ["jpeg", { notes: "Copy button unavailable" }],
-  ["svg", {}],
-] as const) satisfies Map<string, { notes?: React.ReactNode }>
+  ["image/png", { label: "PNG", notes: "Recommended" }],
+  ["image/jpeg", { label: "JPEG", notes: "Copy button unavailable" }],
+  ["image/svg+xml", { label: "SVG" }],
+] as const) satisfies Map<
+  string,
+  { label: React.ReactNode; notes?: React.ReactNode }
+>
 type Format = Entries<typeof FORMATS>[1][0]
 
 const SIZES = new Map([
@@ -86,7 +89,7 @@ function saveFile(dataString: string): void {
 
 export default function Home() {
   const [text, setText] = useState<string>("")
-  const [format, setFormat] = useState<Format>("png")
+  const [format, setFormat] = useState<Format>("image/png")
   const [size, setSize] = useState<Size>(256)
   const [addBorder, setAddBorder] = useState<boolean>(true)
 
@@ -126,14 +129,14 @@ export default function Home() {
       // Serialize SVG to data string.
       const serialized = new XMLSerializer().serializeToString(svg)
       // Copy SVG to clipboard if selected.
-      if (format === "svg" && to === "clipboard") {
+      if (format === "image/svg+xml" && to === "clipboard") {
         return navigator.clipboard.writeText(serialized)
       }
 
       // Otherwise, generate the SVG data string.
       const dataString = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(serialized)}`
       // Download as SVG if selected.
-      if (format === "svg") return saveFile(dataString)
+      if (format === "image/svg+xml") return saveFile(dataString)
 
       // Otherwise, load the data string into a canvas for rasterization.
       const canvas = await canvasQRCode(dataString)
@@ -142,13 +145,11 @@ export default function Home() {
       if (to === "clipboard") {
         return canvas.toBlob((blob) => {
           if (!blob) throw new Error("Could not save image")
-          navigator.clipboard.write([
-            new ClipboardItem({ [`image/${format}`]: blob }),
-          ])
-        }, `image/${format}`)
+          navigator.clipboard.write([new ClipboardItem({ [format]: blob })])
+        }, format)
       }
       // Otherwise, download the image.
-      saveFile(canvas.toDataURL(`image/${format}`, 1.0))
+      saveFile(canvas.toDataURL(format, 1.0))
     },
     [format, addBorder, canvasQRCode],
   )
@@ -216,7 +217,7 @@ export default function Home() {
             <Button
               type="button"
               className="self-center"
-              disabled={!text || format === "jpeg"}
+              disabled={!text || format === "image/jpeg"}
               onClick={() => saveQRCode("clipboard")}
             >
               <ClipboardDocumentIcon />
@@ -260,10 +261,10 @@ export default function Home() {
                 value={format}
                 onChange={(value) => setFormat(value as Format)}
               >
-                {Array.from(FORMATS).map(([format, { notes }]) => (
+                {Array.from(FORMATS).map(([format, { label, notes }]) => (
                   <RadioField key={format}>
                     <Radio value={format} />
-                    <Label>{format.toUpperCase()}</Label>
+                    <Label>{label}</Label>
                     {notes && <Description>{notes}</Description>}
                   </RadioField>
                 ))}
@@ -271,7 +272,7 @@ export default function Home() {
             </Fieldset>
           </div>
 
-          {format !== "svg" && (
+          {format !== "image/svg+xml" && (
             <Fieldset className="sm:ps-8 sm:border-l border-zinc-950/10 dark:border-white/10">
               <Legend>Size</Legend>
               <Text>
