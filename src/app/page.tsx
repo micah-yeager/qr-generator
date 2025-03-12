@@ -1,5 +1,6 @@
 "use client"
 
+import ArrowTopRightOnSquareIcon from "@heroicons/react/16/solid/ArrowTopRightOnSquareIcon"
 import ArrowDownTrayIcon from "@heroicons/react/24/solid/ArrowDownTrayIcon"
 import ClipboardDocumentIcon from "@heroicons/react/24/solid/ClipboardDocumentIcon"
 import CodeBracketIcon from "@heroicons/react/24/solid/CodeBracketIcon"
@@ -27,7 +28,7 @@ import { Heading, Subheading } from "../components/heading"
 import { Input } from "../components/input"
 import { Radio, RadioField, RadioGroup } from "../components/radio"
 import { Switch, SwitchField } from "../components/switch"
-import { Text } from "../components/text"
+import { Strong, Text } from "../components/text"
 
 const BORDER_RATIO = 3 / 64
 
@@ -293,10 +294,6 @@ export default function Home() {
           {format !== "image/svg+xml" && (
             <Fieldset className="sm:ps-8 sm:border-l border-zinc-950/10 dark:border-white/10">
               <Legend>Size</Legend>
-              <Text>
-                If a larger size is needed, consider selecting the SVG format
-                instead.
-              </Text>
               <RadioGroup
                 value={`${size}`}
                 onChange={(value) => setSize(Number(value) as Size)}
@@ -311,6 +308,19 @@ export default function Home() {
                   </RadioField>
                 ))}
               </RadioGroup>
+              <Text className="!mt-6">
+                <Strong className="block">Need even larger?</Strong>
+                Use the SVG format instead, then export it to the desired size
+                with an app like{" "}
+                <a
+                  href="https://inkscape.org"
+                  className="hover:underline hover:underline-offset-4"
+                >
+                  InkScape
+                  <ArrowTopRightOnSquareIcon className="size-4 inline-block ms-1 mb-1" />
+                </a>
+                .
+              </Text>
             </Fieldset>
           )}
         </FieldGroup>
