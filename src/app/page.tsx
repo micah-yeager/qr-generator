@@ -30,6 +30,7 @@ import { Input } from "../components/input"
 import { Radio, RadioField, RadioGroup } from "../components/radio"
 import { Switch, SwitchField } from "../components/switch"
 import { Strong, Text } from "../components/text"
+import { useLocalStorage } from "../hooks/useLocalStorage"
 
 const BORDER_RATIO = 3 / 64
 
@@ -89,11 +90,14 @@ function saveFile(dataString: string): void {
 }
 
 export default function Home() {
+  // Stored states.
+  const [format, setFormat] = useLocalStorage<Format>("format", "image/png")
+  const [size, setSize] = useLocalStorage<Size>("size", 256)
+  const [border, setBorder] = useLocalStorage<boolean>("border", true)
+
+  // Transient states.
   const [text, setText] = useState<string>("")
   const [prevText, setPrevText] = useState<string>("")
-  const [format, setFormat] = useState<Format>("image/png")
-  const [size, setSize] = useState<Size>(256)
-  const [addBorder, setAddBorder] = useState<boolean>(true)
   const [showCopied, setShowCopied] = useState<boolean>(false)
 
   const qrCodeRef = useRef<SVGSVGElement>(null)
@@ -137,14 +141,14 @@ export default function Home() {
     const svg = qrCodeRef.current.cloneNode(true) as SVGSVGElement
 
     // Add a border, if specified.
-    if (addBorder) addQRCodeBorder(svg)
+    if (border) addQRCodeBorder(svg)
 
     // Serialize SVG and convert it to a data string.
     const serialized = new XMLSerializer().serializeToString(svg)
     const dataString = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(serialized)}`
 
     return { serialized, dataString }
-  }, [addBorder])
+  }, [border])
 
   const copyQRCode = useCallback((): Promise<void> => {
     const { serialized, dataString } = serializeSVG()
@@ -278,10 +282,7 @@ export default function Home() {
             <SwitchField>
               <Label>Include white border</Label>
               <Description>Recommended</Description>
-              <Switch
-                checked={addBorder}
-                onChange={(value) => setAddBorder(value)}
-              />
+              <Switch checked={border} onChange={(value) => setBorder(value)} />
             </SwitchField>
 
             <Fieldset>
