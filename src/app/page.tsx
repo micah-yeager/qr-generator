@@ -127,7 +127,7 @@ export default function Home() {
       const serialized = new XMLSerializer().serializeToString(svg)
       // Copy SVG to clipboard if selected.
       if (format === "svg" && to === "clipboard") {
-        await navigator.clipboard.writeText(serialized)
+        return navigator.clipboard.writeText(serialized)
       }
 
       // Otherwise, generate the SVG data string.
