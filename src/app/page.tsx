@@ -6,6 +6,7 @@ import ClipboardDocumentIcon from "@heroicons/react/24/solid/ClipboardDocumentIc
 import CodeBracketIcon from "@heroicons/react/24/solid/CodeBracketIcon"
 import QrCodeIcon from "@heroicons/react/24/solid/QrCodeIcon"
 import UserIcon from "@heroicons/react/24/solid/UserIcon"
+import clsx from "clsx"
 import type React from "react"
 import { useEffect } from "react"
 import { useCallback } from "react"
@@ -89,6 +90,7 @@ function saveFile(dataString: string): void {
 
 export default function Home() {
   const [text, setText] = useState<string>("")
+  const [prevText, setPrevText] = useState<string>("")
   const [format, setFormat] = useState<Format>("image/png")
   const [size, setSize] = useState<Size>(256)
   const [addBorder, setAddBorder] = useState<boolean>(true)
@@ -203,8 +205,12 @@ export default function Home() {
               placeholder="e.g. https://qr.micahyeager.com/"
               id="text-input"
               value={text}
-              onChange={(e) => setText(e.target.value)}
-              debounceTimeout={300}
+              onChange={(e) => {
+                // Ensure duplicate events don't inadvertently overwrite the previous value.
+                if (text !== prevText) setPrevText(text)
+                setText(e.target.value)
+              }}
+              debounceTimeout={100}
               forceNotifyOnBlur={true}
               forceNotifyByEnter={true}
             />
@@ -215,23 +221,34 @@ export default function Home() {
           </Field>
         </FieldGroup>
 
-        <div className="w-full flex flex-col gap-2">
-          {text ? (
-            <div className="p-3 bg-white rounded-md size-64 self-center">
+        <div className="w-full flex flex-col gap-2 items-center">
+          <div className="size-64 relative *:absolute *:size-64 *:rounded-md *:motion-safe:transition-all *:motion-safe:duration-300 *:motion-safe:ease-in-out">
+            <div
+              className={clsx(
+                "p-3 bg-white select-none starting:opacity-0",
+                text ? "opacity-100 scale-100" : "opacity-0 scale-95",
+              )}
+            >
               <QRCode
                 className="h-full w-full"
                 size={size}
-                value={text}
+                // Fall back to previous value if current value is "". This prevents changes as it's fading out, which looks odd.
+                value={text || prevText}
                 aria-label="QR code preview."
                 // biome-ignore lint/suspicious/noExplicitAny: Cast is needed due to missing types.
                 ref={qrCode as React.RefObject<any>}
               />
             </div>
-          ) : (
-            <Text className="flex justify-center self-center items-center p-10 text-center border-zinc-950/10 dark:border-white/10 border-1 border-dashed rounded-md size-64">
+
+            <Text
+              className={clsx(
+                "flex justify-center items-center p-10 text-center border-zinc-950/10 dark:border-white/10 border-1 border-dashed",
+                text ? "opacity-0 scale-95" : "opacity-100 scale-100",
+              )}
+            >
               Enter text above to generate the QR code.
             </Text>
-          )}
+          </div>
 
           <div className="text-center space-x-2 *:w-31">
             <Button
