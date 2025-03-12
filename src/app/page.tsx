@@ -1,12 +1,10 @@
 "use client"
 
-import {
-  ArrowDownTrayIcon,
-  ClipboardDocumentIcon,
-  CodeBracketIcon,
-  QrCodeIcon,
-  UserIcon,
-} from "@heroicons/react/24/solid"
+import ArrowDownTrayIcon from "@heroicons/react/24/solid/ArrowDownTrayIcon"
+import ClipboardDocumentIcon from "@heroicons/react/24/solid/ClipboardDocumentIcon"
+import CodeBracketIcon from "@heroicons/react/24/solid/CodeBracketIcon"
+import QrCodeIcon from "@heroicons/react/24/solid/QrCodeIcon"
+import UserIcon from "@heroicons/react/24/solid/UserIcon"
 import type React from "react"
 import { useEffect } from "react"
 import { useCallback } from "react"
