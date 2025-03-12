@@ -304,7 +304,7 @@ export default function Home() {
             GitHub
           </a>
         </div>
-        <Text>
+        <Text className="text-center">
           All QR codes are generated locally on your device — in other words, no
           data that you enter is sent to any server.
         </Text>
