@@ -43,11 +43,11 @@ const FORMATS = new Map([
 type Format = Entries<typeof FORMATS>[1][0]
 
 const SIZES = new Map([
-  [128, {}],
-  [256, { isDefault: true }],
-  [512, {}],
-  [1024, {}],
-] as const) satisfies Map<number, { isDefault?: boolean }>
+  [128, { label: "128px" }],
+  [256, { label: "256px", notes: "Default, same size as above" }],
+  [512, { label: "512px" }],
+  [1024, { label: "1024px" }],
+] as const) satisfies Map<number, { label: string; notes?: React.ReactNode }>
 type Size = Entries<typeof SIZES>[1][0]
 
 function addQRCodeBorder(svg: SVGSVGElement): void {
@@ -298,13 +298,11 @@ export default function Home() {
                 value={`${size}`}
                 onChange={(value) => setSize(Number(value) as Size)}
               >
-                {Array.from(SIZES).map(([size, { isDefault }]) => (
+                {Array.from(SIZES).map(([size, { label, notes }]) => (
                   <RadioField key={size}>
                     <Radio value={`${size}`} />
-                    <Label>{size}px</Label>
-                    {isDefault && (
-                      <Description>Default, same as preview above</Description>
-                    )}
+                    <Label>{label}</Label>
+                    {notes && <Description>{notes}</Description>}
                   </RadioField>
                 ))}
               </RadioGroup>
