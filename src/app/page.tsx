@@ -151,12 +151,13 @@ export default function Home() {
   }, [border])
 
   // This function cannot be async due to restrictions within Safari.
-  const copyQRCode = useCallback((): Promise<void> => {
+  const copyQRCode = useCallback((): void => {
     const { serialized, dataString } = serializeSVG()
 
     // Copy SVG to clipboard if selected.
     if (format === "image/svg+xml") {
-      return navigator.clipboard.writeText(serialized)
+      navigator.clipboard.writeText(serialized).catch(console.error)
+      return
     }
 
     // Copy rasterized image blob to clipboard.
@@ -170,9 +171,10 @@ export default function Home() {
           ),
       ),
     })
-    return navigator.clipboard
+    navigator.clipboard
       .write([clipboardItem])
       .then(() => setShowCopied(true))
+      .catch(console.error)
   }, [format, serializeSVG, canvasQRCode])
 
   const downloadQRCode = useCallback(async () => {
