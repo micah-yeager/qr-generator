@@ -203,7 +203,7 @@ export default function Home() {
 
   return (
     <main className="flex flex-col items-center justify-items-center min-h-screen p-8 px-4 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <a href="#text-input" className="sr-only">
+      <a href="#input" className="sr-only">
         Skip to QR code generator input
       </a>
 
@@ -217,7 +217,10 @@ export default function Home() {
         </div>
       </div>
 
-      <form className="flex flex-col gap-[32px] w-full sm:max-w-[600px] row-start-2 items-center sm:items-start">
+      <form
+        id="input"
+        className="flex flex-col gap-[32px] w-full sm:max-w-[600px] row-start-2 items-center sm:items-start"
+      >
         <FieldGroup className="w-full">
           <Field className="w-full">
             <Label>QR code content</Label>
@@ -227,7 +230,6 @@ export default function Home() {
               <DebounceInput
                 element={Input}
                 placeholder="e.g. https://qr.micahyeager.com/"
-                id="text-input"
                 value={text}
                 onChange={(e) => {
                   // Ensure duplicate events don't inadvertently overwrite the previous value.
