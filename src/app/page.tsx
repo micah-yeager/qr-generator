@@ -292,7 +292,7 @@ export default function Home() {
         <Divider />
         <Subheading>Options</Subheading>
         <Text>If in doubt, you can safely leave these options alone.</Text>
-        <FieldGroup className="flex flex-col w-full sm:grid grid-cols-2">
+        <FieldGroup className="flex flex-col gap-2 w-full sm:grid grid-cols-2">
           <div className="w-full space-y-8 sm:pe-8">
             <SwitchField>
               <Label>Include white border</Label>
