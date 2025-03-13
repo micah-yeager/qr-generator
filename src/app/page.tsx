@@ -2,10 +2,11 @@
 
 import ArrowTopRightOnSquareIcon from "@heroicons/react/16/solid/ArrowTopRightOnSquareIcon"
 import ExclamationTriangleIcon from "@heroicons/react/16/solid/ExclamationTriangleIcon"
+import QrCodeIconSmall from "@heroicons/react/16/solid/QrCodeIcon"
 import ArrowDownTrayIcon from "@heroicons/react/24/solid/ArrowDownTrayIcon"
 import ClipboardDocumentIcon from "@heroicons/react/24/solid/ClipboardDocumentIcon"
 import CodeBracketIcon from "@heroicons/react/24/solid/CodeBracketIcon"
-import QrCodeIcon from "@heroicons/react/24/solid/QrCodeIcon"
+import QrCodeIconLarge from "@heroicons/react/24/solid/QrCodeIcon"
 import UserIcon from "@heroicons/react/24/solid/UserIcon"
 import clsx from "clsx"
 import type React from "react"
@@ -27,7 +28,7 @@ import {
   Legend,
 } from "../components/fieldset"
 import { Heading, Subheading } from "../components/heading"
-import { Input } from "../components/input"
+import { Input, InputGroup } from "../components/input"
 import { Radio, RadioField, RadioGroup } from "../components/radio"
 import { Switch, SwitchField } from "../components/switch"
 import { Strong, Text } from "../components/text"
@@ -206,7 +207,7 @@ export default function Home() {
       </a>
 
       <div className="text-center sm:text-start sm:flex gap-2 items-start">
-        <QrCodeIcon className="size-14 inline-block shrink-0" />
+        <QrCodeIconLarge className="size-14 inline-block shrink-0" />
         <div>
           <Heading>QR code generator</Heading>
           <Text>
@@ -219,21 +220,24 @@ export default function Home() {
         <FieldGroup className="w-full">
           <Field className="w-full">
             <Label>QR code content</Label>
-            <DebounceInput
-              element={Input}
-              placeholder="e.g. https://qr.micahyeager.com/"
-              id="text-input"
-              value={text}
-              onChange={(e) => {
-                // Ensure duplicate events don't inadvertently overwrite the previous value.
-                if (text !== prevText) setPrevText(text)
-                setText(e.target.value)
-              }}
-              debounceTimeout={100}
-              forceNotifyOnBlur={true}
-              forceNotifyByEnter={true}
-            />
             <Description>The text used to generate the QR code.</Description>
+            <InputGroup>
+              <QrCodeIconSmall />
+              <DebounceInput
+                element={Input}
+                placeholder="e.g. https://qr.micahyeager.com/"
+                id="text-input"
+                value={text}
+                onChange={(e) => {
+                  // Ensure duplicate events don't inadvertently overwrite the previous value.
+                  if (text !== prevText) setPrevText(text)
+                  setText(e.target.value)
+                }}
+                debounceTimeout={100}
+                forceNotifyOnBlur={true}
+                forceNotifyByEnter={true}
+              />
+            </InputGroup>
           </Field>
         </FieldGroup>
 
