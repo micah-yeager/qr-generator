@@ -317,36 +317,35 @@ export default function Home() {
             </Fieldset>
           </div>
 
-          {format !== "image/svg+xml" && (
-            <Fieldset className="sm:ps-8 sm:border-l border-zinc-950/10 dark:border-white/10">
-              <Legend>Size</Legend>
-              <RadioGroup
-                value={`${size}`}
-                onChange={(value) => setSize(Number(value) as Size)}
+          <Fieldset className="sm:ps-8 sm:border-l border-zinc-950/10 dark:border-white/10">
+            <Legend>Size</Legend>
+            <RadioGroup
+              value={`${size}`}
+              onChange={(value) => setSize(Number(value) as Size)}
+              disabled={format === "image/svg+xml"}
+            >
+              {Array.from(SIZES).map(([size, { label, notes }]) => (
+                <RadioField key={size}>
+                  <Radio value={`${size}`} />
+                  <Label>{label}</Label>
+                  {notes && <Description>{notes}</Description>}
+                </RadioField>
+              ))}
+            </RadioGroup>
+            <Text className="!mt-6">
+              <Strong className="block">Need even larger?</Strong>
+              Use the SVG format instead, then export it to the desired size
+              with an app like{" "}
+              <a
+                href="https://inkscape.org"
+                className="hover:underline hover:underline-offset-4"
               >
-                {Array.from(SIZES).map(([size, { label, notes }]) => (
-                  <RadioField key={size}>
-                    <Radio value={`${size}`} />
-                    <Label>{label}</Label>
-                    {notes && <Description>{notes}</Description>}
-                  </RadioField>
-                ))}
-              </RadioGroup>
-              <Text className="!mt-6">
-                <Strong className="block">Need even larger?</Strong>
-                Use the SVG format instead, then export it to the desired size
-                with an app like{" "}
-                <a
-                  href="https://inkscape.org"
-                  className="hover:underline hover:underline-offset-4"
-                >
-                  InkScape
-                  <ArrowTopRightOnSquareIcon className="size-4 inline-block ms-1 mb-1" />
-                </a>
-                .
-              </Text>
-            </Fieldset>
-          )}
+                InkScape
+                <ArrowTopRightOnSquareIcon className="size-4 inline-block ms-1 mb-1" />
+              </a>
+              .
+            </Text>
+          </Fieldset>
         </FieldGroup>
       </form>
 
