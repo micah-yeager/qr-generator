@@ -4,6 +4,7 @@ import ArrowsPointingOutIcon from "@heroicons/react/16/solid/ArrowsPointingOutIc
 import ExclamationTriangleIcon from "@heroicons/react/16/solid/ExclamationTriangleIcon"
 import QrCodeIconSmall from "@heroicons/react/16/solid/QrCodeIcon"
 import ArrowDownTrayIcon from "@heroicons/react/24/solid/ArrowDownTrayIcon"
+import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon"
 import ClipboardDocumentIcon from "@heroicons/react/24/solid/ClipboardDocumentIcon"
 import CodeBracketIcon from "@heroicons/react/24/solid/CodeBracketIcon"
 import QrCodeIconLarge from "@heroicons/react/24/solid/QrCodeIcon"
@@ -19,6 +20,14 @@ import QRCode from "react-qr-code"
 import type { Entries } from "type-fest"
 import { Button } from "../components/button"
 import { Divider } from "../components/divider"
+import {
+  Dropdown,
+  DropdownButton,
+  DropdownDescription,
+  DropdownItem,
+  DropdownLabel,
+  DropdownMenu,
+} from "../components/dropdown"
 import {
   Description,
   Field,
@@ -317,23 +326,48 @@ export default function Home() {
             <Field>
               <Label>Size</Label>
               <Description>Width and height, in pixels.</Description>
-              <InputGroup>
-                <ArrowsPointingOutIcon />
-                <Input
-                  id="text-input"
-                  inputClassName="!pe-9"
-                  type="number"
-                  min={1}
-                  value={size}
-                  onChange={(e) => {
-                    setSize(Number(e.target.value))
-                  }}
-                  disabled={format === "image/svg+xml"}
-                />
-                <Text className="absolute right-3 pointer-events-none select-none cursor- top-1/2 -translate-y-1/2">
-                  px
-                </Text>
-              </InputGroup>
+              <div className="flex gap-2">
+                <InputGroup>
+                  <ArrowsPointingOutIcon />
+                  <Input
+                    id="text-input"
+                    inputClassName="!pe-9"
+                    type="number"
+                    min={1}
+                    value={size}
+                    onChange={(e) => {
+                      setSize(Number(e.target.value))
+                    }}
+                    disabled={format === "image/svg+xml"}
+                  />
+                  <Text className="absolute right-3 pointer-events-none select-none cursor- top-1/2 -translate-y-1/2">
+                    px
+                  </Text>
+                </InputGroup>
+                <Dropdown>
+                  <DropdownButton outline={true} className="shrink-0 grow-0">
+                    Presets
+                    <ChevronDownIcon />
+                  </DropdownButton>
+                  <DropdownMenu>
+                    <DropdownItem onClick={() => setSize(128)}>
+                      <DropdownLabel>128px</DropdownLabel>
+                    </DropdownItem>
+                    <DropdownItem onClick={() => setSize(256)}>
+                      <DropdownLabel>256px</DropdownLabel>
+                      <DropdownDescription>
+                        Default, same as above
+                      </DropdownDescription>
+                    </DropdownItem>
+                    <DropdownItem onClick={() => setSize(512)}>
+                      <DropdownLabel>512px</DropdownLabel>
+                    </DropdownItem>
+                    <DropdownItem onClick={() => setSize(1024)}>
+                      <DropdownLabel>1024px</DropdownLabel>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
             </Field>
           </div>
         </FieldGroup>
