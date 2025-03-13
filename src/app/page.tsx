@@ -36,7 +36,7 @@ import {
   Label,
   Legend,
 } from "../components/fieldset"
-import { Heading, Subheading } from "../components/heading"
+import { Heading } from "../components/heading"
 import { Input, InputGroup } from "../components/input"
 import { Radio, RadioField, RadioGroup } from "../components/radio"
 import { Switch, SwitchField } from "../components/switch"
@@ -295,18 +295,20 @@ export default function Home() {
         </div>
 
         <Divider />
-        <Subheading>Options</Subheading>
-        <Text>If in doubt, you can safely leave these options alone.</Text>
-        <FieldGroup className="flex flex-col gap-2 w-full sm:grid grid-cols-2">
-          <div className="w-full space-y-8 sm:pe-8">
+
+        <Fieldset>
+          <Legend>Options</Legend>
+          <Text>If in doubt, you can safely leave these options alone.</Text>
+          <FieldGroup className="sm:grid grid-cols-2 items-start sm:*:last:mb-0 sm:*:nth-last-2:mb-0 sm:*:odd:pe-8 sm:*:even:ps-8 sm:*:even:border-l sm:*:even:border-zinc-950/10 sm:*:even:dark:border-white/10">
             <SwitchField>
               <Label>Include white border</Label>
               <Description>Recommended</Description>
               <Switch checked={border} onChange={(value) => setBorder(value)} />
             </SwitchField>
 
-            <Fieldset>
+            <Fieldset className="row-span-3">
               <Legend>Format</Legend>
+              <Text className="!mt-0">The image type to export.</Text>
               <RadioGroup
                 value={format}
                 onChange={(value) => setFormat(value as Format)}
@@ -320,10 +322,8 @@ export default function Home() {
                 ))}
               </RadioGroup>
             </Fieldset>
-          </div>
 
-          <div className="flex sm:ps-8 sm:border-l border-zinc-950/10 dark:border-white/10">
-            <Field>
+            <Field className="space-y-3">
               <Label>Size</Label>
               <Description>Width and height, in pixels.</Description>
               <div className="flex gap-2">
@@ -345,7 +345,11 @@ export default function Home() {
                   </Text>
                 </InputGroup>
                 <Dropdown>
-                  <DropdownButton outline={true} className="shrink-0 grow-0">
+                  <DropdownButton
+                    outline={true}
+                    className="shrink-0 grow-0"
+                    disabled={format === "image/svg+xml"}
+                  >
                     Presets
                     <ChevronDownIcon />
                   </DropdownButton>
@@ -369,8 +373,8 @@ export default function Home() {
                 </Dropdown>
               </div>
             </Field>
-          </div>
-        </FieldGroup>
+          </FieldGroup>
+        </Fieldset>
       </form>
 
       <footer className="space-y-4">
