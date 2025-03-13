@@ -53,7 +53,7 @@ const FORMATS = new Map([
       label: "JPEG",
       notes: (
         <>
-          <ExclamationTriangleIcon className="inline-block mb-0.5 me-0.5 size-4 text-yellow-400 dark:text-yellow-500" />{" "}
+          <ExclamationTriangleIcon className="inline-block mb-0.5 me-0.5 size-4 text-yellow-600 dark:text-yellow-500" />{" "}
           Copy button will be unavailable
         </>
       ),
