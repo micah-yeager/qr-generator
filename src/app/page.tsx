@@ -1,6 +1,6 @@
 "use client"
 
-import ArrowTopRightOnSquareIcon from "@heroicons/react/16/solid/ArrowTopRightOnSquareIcon"
+import ArrowsPointingOutIcon from "@heroicons/react/16/solid/ArrowsPointingOutIcon"
 import ExclamationTriangleIcon from "@heroicons/react/16/solid/ExclamationTriangleIcon"
 import QrCodeIconSmall from "@heroicons/react/16/solid/QrCodeIcon"
 import ArrowDownTrayIcon from "@heroicons/react/24/solid/ArrowDownTrayIcon"
@@ -31,7 +31,7 @@ import { Heading, Subheading } from "../components/heading"
 import { Input, InputGroup } from "../components/input"
 import { Radio, RadioField, RadioGroup } from "../components/radio"
 import { Switch, SwitchField } from "../components/switch"
-import { Strong, Text } from "../components/text"
+import { Text } from "../components/text"
 import { useLocalStorage } from "../hooks/useLocalStorage"
 
 const BORDER_RATIO = 3 / 64
@@ -56,14 +56,6 @@ const FORMATS = new Map([
   { label: React.ReactNode; notes?: React.ReactNode }
 >
 type Format = Entries<typeof FORMATS>[1][0]
-
-const SIZES = new Map([
-  [128, { label: "128px" }],
-  [256, { label: "256px", notes: "Default, same size as above" }],
-  [512, { label: "512px" }],
-  [1024, { label: "1024px" }],
-] as const) satisfies Map<number, { label: string; notes?: React.ReactNode }>
-type Size = Entries<typeof SIZES>[1][0]
 
 function addQRCodeBorder(svg: SVGSVGElement): void {
   // Round up to avoid inadvertently rounding to zero.
@@ -105,7 +97,7 @@ function saveFile(dataString: string): void {
 export default function Home() {
   // Stored states.
   const [format, setFormat] = useLocalStorage<Format>("format", "image/png")
-  const [size, setSize] = useLocalStorage<Size>("size", 256)
+  const [size, setSize] = useLocalStorage<number>("size", 256)
   const [border, setBorder] = useLocalStorage<boolean>("border", true)
 
   // Transient states.
@@ -321,35 +313,29 @@ export default function Home() {
             </Fieldset>
           </div>
 
-          <Fieldset className="sm:ps-8 sm:border-l border-zinc-950/10 dark:border-white/10">
-            <Legend>Size</Legend>
-            <RadioGroup
-              value={`${size}`}
-              onChange={(value) => setSize(Number(value) as Size)}
-              disabled={format === "image/svg+xml"}
-            >
-              {Array.from(SIZES).map(([size, { label, notes }]) => (
-                <RadioField key={size}>
-                  <Radio value={`${size}`} />
-                  <Label>{label}</Label>
-                  {notes && <Description>{notes}</Description>}
-                </RadioField>
-              ))}
-            </RadioGroup>
-            <Text className="!mt-6">
-              <Strong className="block">Need even larger?</Strong>
-              Use the SVG format instead, then export it to the desired size
-              with an app like{" "}
-              <a
-                href="https://inkscape.org"
-                className="hover:underline hover:underline-offset-4"
-              >
-                InkScape
-                <ArrowTopRightOnSquareIcon className="size-4 inline-block ms-1 mb-1" />
-              </a>
-              .
-            </Text>
-          </Fieldset>
+          <div className="flex sm:ps-8 sm:border-l border-zinc-950/10 dark:border-white/10">
+            <Field>
+              <Label>Size</Label>
+              <Description>Width and height, in pixels.</Description>
+              <InputGroup>
+                <ArrowsPointingOutIcon />
+                <Input
+                  id="text-input"
+                  inputClassName="!pe-9"
+                  type="number"
+                  min={1}
+                  value={size}
+                  onChange={(e) => {
+                    setSize(Number(e.target.value))
+                  }}
+                  disabled={format === "image/svg+xml"}
+                />
+                <Text className="absolute right-3 pointer-events-none select-none cursor- top-1/2 -translate-y-1/2">
+                  px
+                </Text>
+              </InputGroup>
+            </Field>
+          </div>
         </FieldGroup>
       </form>
 

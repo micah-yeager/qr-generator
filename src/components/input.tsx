@@ -28,9 +28,11 @@ type DateType = (typeof dateTypes)[number]
 export const Input = forwardRef(function Input(
   {
     className,
+    inputClassName,
     ...props
   }: {
     className?: string
+    inputClassName?: string
     type?:
       | "email"
       | "number"
@@ -66,6 +68,7 @@ export const Input = forwardRef(function Input(
         ref={ref}
         {...props}
         className={clsx([
+          inputClassName,
           // Date classes
           props.type &&
             dateTypes.includes(props.type) && [
