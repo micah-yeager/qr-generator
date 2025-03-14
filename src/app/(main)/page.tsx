@@ -2,7 +2,6 @@
 
 import ArrowsPointingOutIcon from "@heroicons/react/16/solid/ArrowsPointingOutIcon"
 import ExclamationTriangleIcon from "@heroicons/react/16/solid/ExclamationTriangleIcon"
-import QrCodeIconSmall from "@heroicons/react/16/solid/QrCodeIcon"
 import ArrowDownTrayIcon from "@heroicons/react/24/solid/ArrowDownTrayIcon"
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon"
 import ClipboardDocumentIcon from "@heroicons/react/24/solid/ClipboardDocumentIcon"
@@ -11,15 +10,12 @@ import QrCodeIconLarge from "@heroicons/react/24/solid/QrCodeIcon"
 import UserIcon from "@heroicons/react/24/solid/UserIcon"
 import clsx from "clsx"
 import type React from "react"
-import { useEffect } from "react"
-import { useCallback } from "react"
-import { useRef } from "react"
-import { useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { DebounceInput } from "react-debounce-input"
 import QRCode from "react-qr-code"
 import type { Entries } from "type-fest"
-import { Button } from "../components/button"
-import { Divider } from "../components/divider"
+import { Button } from "../../components/button"
+import { Divider } from "../../components/divider"
 import {
   Dropdown,
   DropdownButton,
@@ -27,7 +23,7 @@ import {
   DropdownItem,
   DropdownLabel,
   DropdownMenu,
-} from "../components/dropdown"
+} from "../../components/dropdown"
 import {
   Description,
   Field,
@@ -35,13 +31,17 @@ import {
   Fieldset,
   Label,
   Legend,
-} from "../components/fieldset"
-import { Heading } from "../components/heading"
-import { Input, InputGroup } from "../components/input"
-import { Radio, RadioField, RadioGroup } from "../components/radio"
-import { Switch, SwitchField } from "../components/switch"
-import { Text } from "../components/text"
-import { useLocalStorage } from "../hooks/useLocalStorage"
+} from "../../components/fieldset"
+import { Heading } from "../../components/heading"
+import { Input, InputGroup } from "../../components/input"
+import { Radio, RadioField, RadioGroup } from "../../components/radio"
+import { Switch, SwitchField } from "../../components/switch"
+import { Text } from "../../components/text"
+import { Textarea } from "../../components/textarea"
+import { useLocalStorage } from "../../hooks/useLocalStorage"
+import { MailDialog, MailDropdownItem } from "./_dialogs/mail-dialog"
+import { PhoneDialog, PhoneDropdownItem } from "./_dialogs/phone-dialog"
+import { WifiDialog, WifiDropdownItem } from "./_dialogs/wifi-dialog"
 
 const BORDER_RATIO = 3 / 64
 
@@ -113,6 +113,11 @@ export default function Home() {
   const [text, setText] = useState<string>("")
   const [prevText, setPrevText] = useState<string>("")
   const [showCopied, setShowCopied] = useState<boolean>(false)
+
+  // Dialog states
+  const [mailDialogOpen, setMailDialogOpen] = useState<boolean>(false)
+  const [phoneDialogOpen, setPhoneDialogOpen] = useState<boolean>(false)
+  const [wifiDialogOpen, setWifiDialogOpen] = useState<boolean>(false)
 
   const qrCodeRef = useRef<SVGSVGElement>(null)
 
@@ -222,13 +227,14 @@ export default function Home() {
         className="flex flex-col gap-[32px] w-full sm:max-w-[600px] row-start-2 items-center sm:items-start"
       >
         <FieldGroup className="w-full">
-          <Field className="w-full">
+          <Field>
             <Label>QR code content</Label>
             <Description>The text used to generate the QR code.</Description>
-            <InputGroup>
-              <QrCodeIconSmall />
+            <div className="flex flex-col justify-stretch sm:flex-row items-start gap-2">
               <DebounceInput
-                element={Input}
+                // @ts-expect-error: Weird type requirements from `DebounceInput`.
+                element={Textarea}
+                rows={1}
                 placeholder="e.g. https://qr.micahyeager.com/"
                 value={text}
                 onChange={(e) => {
@@ -240,7 +246,21 @@ export default function Home() {
                 forceNotifyOnBlur={true}
                 forceNotifyByEnter={true}
               />
-            </InputGroup>
+              <Dropdown>
+                <DropdownButton
+                  outline={true}
+                  className="shrink-0 w-full sm:w-auto grow-0"
+                >
+                  Templates
+                  <ChevronDownIcon />
+                </DropdownButton>
+                <DropdownMenu>
+                  <MailDropdownItem onClick={() => setMailDialogOpen(true)} />
+                  <PhoneDropdownItem onClick={() => setPhoneDialogOpen(true)} />
+                  <WifiDropdownItem onClick={() => setWifiDialogOpen(true)} />
+                </DropdownMenu>
+              </Dropdown>
+            </div>
           </Field>
         </FieldGroup>
 
@@ -325,7 +345,7 @@ export default function Home() {
               </RadioGroup>
             </Fieldset>
 
-            <Field className="space-y-3">
+            <Field>
               <Label>Size</Label>
               <Description>Width and height, in pixels.</Description>
               <div className="flex gap-2">
@@ -401,6 +421,22 @@ export default function Home() {
           data that you enter is sent to any server.
         </Text>
       </footer>
+
+      <MailDialog
+        open={mailDialogOpen}
+        onClose={setMailDialogOpen}
+        setText={setText}
+      />
+      <PhoneDialog
+        open={phoneDialogOpen}
+        onClose={setPhoneDialogOpen}
+        setText={setText}
+      />
+      <WifiDialog
+        open={wifiDialogOpen}
+        onClose={setWifiDialogOpen}
+        setText={setText}
+      />
     </main>
   )
 }

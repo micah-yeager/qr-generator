@@ -4,12 +4,16 @@ import type React from "react"
 import { forwardRef } from "react"
 
 export function InputGroup({
+  className,
   children,
+  ...rest
 }: React.ComponentPropsWithoutRef<"span">) {
   return (
     <span
+      {...rest}
       data-slot="control"
       className={clsx(
+        className,
         "relative isolate block",
         "has-[[data-slot=icon]:first-child]:[&_input]:pl-10 has-[[data-slot=icon]:last-child]:[&_input]:pr-10 sm:has-[[data-slot=icon]:first-child]:[&_input]:pl-8 sm:has-[[data-slot=icon]:last-child]:[&_input]:pr-8",
         "*:data-[slot=icon]:pointer-events-none *:data-[slot=icon]:absolute *:data-[slot=icon]:top-3 *:data-[slot=icon]:z-10 *:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:top-2.5 sm:*:data-[slot=icon]:size-4",

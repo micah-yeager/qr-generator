@@ -55,6 +55,7 @@ export function Field({
       {...props}
       className={clsx(
         className,
+        "space-y-3",
         "[&>[data-slot=label]+[data-slot=control]]:mt-3",
         "[&>[data-slot=label]+[data-slot=description]]:mt-1",
         "[&>[data-slot=description]+[data-slot=control]]:mt-3",
