@@ -411,7 +411,7 @@ export default function Home() {
                     }}
                     disabled={format === "image/svg+xml"}
                   />
-                  <Text className="absolute right-3 pointer-events-none select-none cursor- top-1/2 -translate-y-1/2">
+                  <Text className="absolute right-3 pointer-events-none select-none top-1/2 -translate-y-1/2">
                     px
                   </Text>
                 </InputGroup>
