@@ -84,8 +84,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           className={clsx(classes, "invisible whitespace-pre-wrap")}
           aria-hidden
         >
-          {value}
-          <span aria-hidden="true">‍</span>
+          {value}‍
         </div>
       </span>
     )
