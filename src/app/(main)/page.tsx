@@ -45,6 +45,11 @@ import { WifiDialog, WifiDropdownItem } from "./_dialogs/wifi-dialog"
 
 const BORDER_RATIO = 3 / 64
 
+/**
+ * Number of cells in a QR code generated with a blank string.
+ */
+const DEFAULT_MIN_SIZE = 21
+
 const FORMATS = new Map([
   ["image/png", { label: "PNG", notes: "Recommended" }],
   [
@@ -66,12 +71,20 @@ const FORMATS = new Map([
 >
 type Format = Entries<typeof FORMATS>[1][0]
 
+function calcQRCodeSizeWithBorder(viewBoxSize: number) {
+  const borderSize = Math.ceil(viewBoxSize * BORDER_RATIO)
+  const totalSize = borderSize * 2 + viewBoxSize
+
+  return { borderSize, totalSize }
+}
+
 function addQRCodeBorder(svg: SVGSVGElement): void {
   // Round up to avoid inadvertently rounding to zero.
-  const borderSize = Math.ceil(svg.viewBox.baseVal.width * BORDER_RATIO)
-  const newViewBoxSize = borderSize * 2 + svg.viewBox.baseVal.width
-  svg.viewBox.baseVal.width = newViewBoxSize
-  svg.viewBox.baseVal.height = newViewBoxSize
+  const { borderSize, totalSize } = calcQRCodeSizeWithBorder(
+    svg.viewBox.baseVal.width,
+  )
+  svg.viewBox.baseVal.width = totalSize
+  svg.viewBox.baseVal.height = totalSize
 
   // Translate all path children.
   const transform = svg.createSVGTransform()
@@ -113,6 +126,8 @@ export default function Home() {
   const [text, setText] = useState<string>("")
   const [prevText, setPrevText] = useState<string>("")
   const [showCopied, setShowCopied] = useState<boolean>(false)
+  const [sizeInput, setSizeInput] = useState<string>(String(size))
+  const [minSize, setMinSize] = useState<number>(DEFAULT_MIN_SIZE)
 
   // Dialog states
   const [mailDialogOpen, setMailDialogOpen] = useState<boolean>(false)
@@ -120,6 +135,26 @@ export default function Home() {
   const [wifiDialogOpen, setWifiDialogOpen] = useState<boolean>(false)
 
   const qrCodeRef = useRef<SVGSVGElement>(null)
+
+  // Update minimum size when text value changes, since we can't use QRCode's
+  // view box as a dependency.
+  useEffect(() => {
+    const qrCodeSize =
+      text && qrCodeRef.current
+        ? qrCodeRef.current.viewBox.baseVal.width
+        : DEFAULT_MIN_SIZE
+    const newMinSize = border
+      ? calcQRCodeSizeWithBorder(qrCodeSize).totalSize
+      : qrCodeSize
+
+    if (newMinSize !== minSize) {
+      setMinSize(newMinSize)
+      if (size < newMinSize) {
+        setSize(newMinSize)
+        setSizeInput(String(newMinSize))
+      }
+    }
+  }, [text, minSize, size, setSize, border])
 
   // Reset `showCopied` after being enabled.
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -355,10 +390,24 @@ export default function Home() {
                     id="text-input"
                     inputClassName="!pe-9"
                     type="number"
-                    min={1}
-                    value={size}
+                    min={minSize}
+                    value={sizeInput}
                     onChange={(e) => {
-                      setSize(Number(e.target.value))
+                      setSizeInput(e.target.value)
+                      // Split the actual value into a separate state, so users can clear the field if needed.
+                      const value = Number(e.target.value)
+                      setSize(
+                        Number.isNaN(value) || value < minSize
+                          ? minSize
+                          : value,
+                      )
+                    }}
+                    onBlur={(e) => {
+                      const value = Number(e.target.value)
+                      if (Number.isNaN(value) || value < minSize) {
+                        setSize(minSize)
+                        setSizeInput(String(minSize))
+                      }
                     }}
                     disabled={format === "image/svg+xml"}
                   />
