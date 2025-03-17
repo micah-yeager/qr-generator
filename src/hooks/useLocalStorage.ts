@@ -1,6 +1,14 @@
+"use client"
+
 import { useEffect, useState } from "react"
 import type React from "react"
 
+/**
+ * Retrieve JSON-serializable state on load and store changes in local storage.
+ *
+ * @param key - The key to store the value under.
+ * @param defaultValue - If no stored value is found, default to this.
+ */
 export function useLocalStorage<T>(
   key: string,
   defaultValue: T,

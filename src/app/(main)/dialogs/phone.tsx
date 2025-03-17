@@ -34,7 +34,7 @@ import {
 type Method = "text" | "call"
 const DEFAULT_METHOD = "text" satisfies Method
 
-export function PhoneDialog({
+export function Phone({
   open,
   onClose,
   setText,

@@ -31,12 +31,7 @@ function escapeWiFiComponent(value: string): string {
   return value.replace(WIFI_ESCAPE_TARGET_REGEX, "\\$1")
 }
 
-export function WifiDialog({
-  open,
-  onClose,
-  setText,
-  ...rest
-}: TemplateDialogProps) {
+export function Wifi({ open, onClose, setText, ...rest }: TemplateDialogProps) {
   const [ssid, setSSID] = useState<string>("")
   const [hasPassword, setHasPassword] = useState<boolean>(true)
   const [usesWEP, setUsesWEP] = useState<boolean>(false)

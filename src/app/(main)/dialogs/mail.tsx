@@ -27,12 +27,7 @@ import {
   type TemplateDropdownItemProps,
 } from "./shared"
 
-export function MailDialog({
-  open,
-  onClose,
-  setText,
-  ...rest
-}: TemplateDialogProps) {
+export function Mail({ open, onClose, setText, ...rest }: TemplateDialogProps) {
   const [to, setTo] = useState<string[]>([])
   const [cc, setCC] = useState<string[]>([])
   const [bcc, setBCC] = useState<string[]>([])
