@@ -15,9 +15,9 @@ import {
 } from "../../../components/fieldset"
 import { Textarea } from "../../../components/textarea"
 import { useGlobalStore } from "../../../stores/global-store"
-import { Mail, MailDropdownItem } from "../dialogs/mail"
-import { Phone, PhoneDropdownItem } from "../dialogs/phone"
-import { Wifi, WifiDropdownItem } from "../dialogs/wifi"
+import { Mail, MailDropdownItem } from "../templates/mail"
+import { Phone, PhoneDropdownItem } from "../templates/phone"
+import { Wifi, WifiDropdownItem } from "../templates/wifi"
 
 type QRContentInputProps = Omit<
   React.ComponentPropsWithoutRef<typeof FieldGroup>,
