@@ -1,7 +1,4 @@
-import {
-  Textarea as HeadlessTextarea,
-  type TextareaProps as HeadlessTextareaProps,
-} from "@headlessui/react"
+import * as Headless from "@headlessui/react"
 import clsx from "clsx"
 import type { ChangeEvent } from "react"
 import { forwardRef, useState } from "react"
@@ -12,7 +9,7 @@ import { useForwardRef } from "../hooks/useForwardRef"
  *
  * @see Headless UI's {@link HeadlessTextareaProps TextareaProps}
  */
-type TextareaProps = Omit<HeadlessTextareaProps, "as">
+type TextareaProps = Omit<Headless.TextareaProps, "as">
 
 /**
  * A textarea field.
@@ -71,7 +68,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           "has-data-disabled:opacity-50 has-data-disabled:before:bg-zinc-950/5 has-data-disabled:before:shadow-none",
         )}
       >
-        <HeadlessTextarea
+        <Headless.Textarea
           ref={ref}
           {...props}
           onChange={onChange}
