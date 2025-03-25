@@ -39,7 +39,7 @@ export default function Home() {
           <QRContentInput className="w-full" />
 
           <div className="w-full flex flex-col gap-2 items-center">
-            <QRContentPreview className="size-64 relative *:absolute *:size-64 *:rounded-md *:motion-safe:transition-all *:motion-safe:duration-300 *:motion-safe:ease-in-out" />
+            <QRContentPreview className="size-64" />
             <QRContentSave className="text-center space-x-2 *:w-31" />
           </div>
 

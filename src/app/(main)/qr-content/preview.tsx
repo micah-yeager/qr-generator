@@ -1,19 +1,41 @@
 import clsx from "clsx"
 import type React from "react"
 import QRCode from "react-qr-code"
+import type { SetRequired } from "type-fest"
 import { Text } from "../../../components/text"
 import { useGlobalStore } from "../../../stores/global-store"
 
-type QRContentPreviewProps = Omit<
-  React.ComponentPropsWithoutRef<"div">,
-  "children"
+/**
+ * Props for {@link QRContentPreview}.
+ *
+ * Sets the `div` `className` prop as required and disallows children.
+ */
+type QRContentPreviewProps = SetRequired<
+  Omit<React.ComponentPropsWithoutRef<"div">, "children">,
+  "className"
 >
 
-export function QRContentPreview(props: QRContentPreviewProps) {
+/**
+ * Preview a QR code.
+ *
+ * @param className - Requires a `size-` utility class at minimum.
+ * @param rest - Any remaining parameters for a `div` element.
+ * @see {@link QRContentPreviewProps}
+ */
+export function QRContentPreview({
+  className,
+  ...rest
+}: QRContentPreviewProps) {
   const { content, prevContent, size, qrCodeRef } = useGlobalStore()
 
   return (
-    <div {...props}>
+    <div
+      {...rest}
+      className={clsx(
+        className,
+        "relative *:absolute *:size-full *:rounded-md *:motion-safe:transition-all *:motion-safe:duration-300 *:motion-safe:ease-in-out",
+      )}
+    >
       <div
         className={clsx(
           "p-3 bg-white select-none starting:opacity-0",
