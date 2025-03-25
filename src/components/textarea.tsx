@@ -7,7 +7,7 @@ import { useForwardRef } from "../hooks/useForwardRef"
 /**
  * Properties for the {@link Textarea} component.
  *
- * @see Headless UI's {@link HeadlessTextareaProps TextareaProps}
+ * @see Headless UI's {@link Headless.TextareaProps}
  */
 type TextareaProps = Omit<Headless.TextareaProps, "as">
 
