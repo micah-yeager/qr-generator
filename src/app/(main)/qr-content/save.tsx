@@ -32,11 +32,11 @@ function addQRCodeBorder(svg: SVGSVGElement): void {
   svg.prepend(bg)
 }
 
-function saveFile(dataString: string): void {
+function saveFile(data: string | Blob): void {
   const downloadLink = document.createElement("a")
   document.body.appendChild(downloadLink)
 
-  downloadLink.href = dataString
+  downloadLink.href = data instanceof Blob ? URL.createObjectURL(data) : data
   downloadLink.target = "_self"
   downloadLink.download = "QR code"
   downloadLink.click()
@@ -63,7 +63,7 @@ export function QRContentSave(props: QRContentSaveProps) {
   }, [showCopied])
 
   const canvasQRCode = useCallback(
-    async (dataString: string): Promise<HTMLCanvasElement> => {
+    async (dataString: string): Promise<OffscreenCanvas> => {
       // Load the data string into an img element.
       const svgImg = document.createElement("img")
       await new Promise<void>((resolve, reject) => {
@@ -73,11 +73,12 @@ export function QRContentSave(props: QRContentSaveProps) {
       })
 
       // Import the img into a canvas, then export with the desired format and size.
-      const canvas = document.createElement("canvas")
-      canvas.width = size
-      canvas.height = size
+      const canvas = new OffscreenCanvas(size, size)
       // biome-ignore lint/style/noNonNullAssertion: we can safely assume this will be non-null
       canvas.getContext("2d")!.drawImage(svgImg, 0, 0, size, size)
+
+      // Cleanup
+      svgImg.remove()
 
       return canvas
     },
@@ -115,12 +116,8 @@ export function QRContentSave(props: QRContentSaveProps) {
     // Copy rasterized image blob to clipboard.
     const clipboardItem = new ClipboardItem({
       // Need to use a promise to properly support Safari.
-      [format]: canvasQRCode(dataString).then(
-        (canvas) =>
-          // `toBlob` callback seems to be async, so we need to wrap it in a promise.
-          new Promise<Blob>((resolve, reject) =>
-            canvas.toBlob((blob) => (blob === null ? reject() : resolve(blob))),
-          ),
+      [format]: canvasQRCode(dataString).then((canvas) =>
+        canvas.convertToBlob({ type: format, quality: 1.0 }),
       ),
     })
     navigator.clipboard
@@ -136,7 +133,7 @@ export function QRContentSave(props: QRContentSaveProps) {
     if (format === "image/svg+xml") return saveFile(dataString)
     // Load the data string into a canvas for rasterization.
     const canvas = await canvasQRCode(dataString)
-    saveFile(canvas.toDataURL(format, 1.0))
+    saveFile(await canvas.convertToBlob({ type: format, quality: 1.0 }))
   }, [format, serializeSVG, canvasQRCode])
 
   return (
