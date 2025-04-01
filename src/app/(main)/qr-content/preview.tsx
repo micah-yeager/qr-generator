@@ -26,7 +26,7 @@ export function QRContentPreview({
   className,
   ...rest
 }: QRContentPreviewProps) {
-  const { content, prevContent, size, qrCodeRef } = useGlobalStore()
+  const { content, prevContent, qrCodeRef } = useGlobalStore()
 
   return (
     <div
@@ -44,7 +44,6 @@ export function QRContentPreview({
       >
         <QRCode
           className="h-full w-full"
-          size={size}
           // Fall back to previous value if current value is "". This prevents changes as it's fading out, which looks odd.
           value={content || prevContent}
           aria-label="QR code preview."
