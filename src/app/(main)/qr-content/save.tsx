@@ -28,7 +28,7 @@ function addQRCodeBorder(svg: SVGSVGElement): void {
   // `2` represents percentages.
   bg.width.baseVal.newValueSpecifiedUnits(2, 100)
   bg.height.baseVal.newValueSpecifiedUnits(2, 100)
-  bg.style.fill = "#ffffff"
+  bg.setAttribute("fill", "#FFFFFF")
   svg.prepend(bg)
 }
 
@@ -92,6 +92,19 @@ export function QRContentSave(props: QRContentSaveProps) {
     if (!qrCodeRef.current) throw new Error("Could not find QR code")
     // Clone the SVG, since we want to modify it if adding a border.
     const svg = qrCodeRef.current.cloneNode(true) as SVGSVGElement
+
+    // Remove non-applicable attributes.
+    svg.removeAttribute("class")
+    svg.removeAttribute("width")
+    svg.removeAttribute("height")
+    svg.removeAttribute("aria-label")
+
+    // Remove unnecessary path whitespace.
+    for (const child of svg.children) {
+      if (child.tagName !== "path") continue
+      const d = child.getAttribute("d")?.replace(/\s{2,}/g, " ") ?? ""
+      child.setAttribute("d", d.trim())
+    }
 
     // Add a border, if specified.
     if (border) addQRCodeBorder(svg)
