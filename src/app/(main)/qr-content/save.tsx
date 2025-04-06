@@ -134,6 +134,16 @@ export function QRContentSave(props: QRContentSaveProps) {
     timeoutRef.current = setTimeout(() => setShowCopied(false), 3_000)
   }, [showCopied])
 
+  const processSVG = useCallback((): SVGData => {
+    if (!qrCodeRef.current) throw new Error("Could not find QR code")
+    const svgData = new SVGData(qrCodeRef.current)
+
+    // Add a border, if specified.
+    if (border) svgData.addBorder()
+
+    return svgData
+  }, [border, qrCodeRef.current])
+
   const canvasQRCode = useCallback(
     async (svgData: SVGData): Promise<OffscreenCanvas> => {
       // Load the data string into an img element.
@@ -157,16 +167,6 @@ export function QRContentSave(props: QRContentSaveProps) {
     },
     [scale],
   )
-
-  const processSVG = useCallback((): SVGData => {
-    if (!qrCodeRef.current) throw new Error("Could not find QR code")
-    const svgData = new SVGData(qrCodeRef.current)
-
-    // Add a border, if specified.
-    if (border) svgData.addBorder()
-
-    return svgData
-  }, [border, qrCodeRef.current])
 
   // This function cannot be async due to restrictions within Safari.
   const copyQRCode = useCallback((): void => {
