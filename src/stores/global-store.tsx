@@ -1,9 +1,9 @@
-import { createContext, useContext, useRef, useState } from "react"
+import { createContext, useContext, useEffect, useRef, useState } from "react"
 import type React from "react"
 import {
   DEFAULT_BORDER,
   DEFAULT_FORMAT,
-  DEFAULT_SIZE,
+  DEFAULT_SCALE,
 } from "../config/app-defaults"
 import { useLocalStorage } from "../hooks/useLocalStorage"
 import type { ImageFormat } from "../types/ImageFormat"
@@ -22,9 +22,12 @@ type GlobalStore = {
   /** The image format to export as. */
   format: ImageFormat
   setFormat: (value: ImageFormat) => void
-  /** The size to export a rasterized image as. */
-  size: number
-  setSize: (size: number) => void
+  /** The scale to export a rasterized image as. */
+  scale: number
+  setScale: (size: number) => void
+
+  /** The symmetric size of the QR code. */
+  viewBoxSize: number
 
   /** Reference to the generated QR code. */
   qrCodeRef: React.RefObject<SVGSVGElement | null>
@@ -56,11 +59,23 @@ export function GlobalStoreProvider({ children }: React.PropsWithChildren) {
     "format",
     DEFAULT_FORMAT,
   )
-  const [size, setSize] = useLocalStorage<number>("size", DEFAULT_SIZE)
+  const [scale, setScale] = useLocalStorage<number>("scale", DEFAULT_SCALE)
 
   // Transient states.
   const [content, setContent] = useState<string>("")
+
+  // Computed states.
   const [prevContent, setPrevContent] = useState<string>("")
+  const [viewBoxSize, setViewBoxSize] = useState<number>(0)
+  /*
+    useEffect is used here because the ref's view box value is only updated
+    after `react-qr-code` renders the SVG.
+   */
+  useEffect(() => {
+    const newViewBoxSize =
+      content && qrCodeRef.current ? qrCodeRef.current.viewBox.baseVal.width : 0
+    if (viewBoxSize !== newViewBoxSize) setViewBoxSize(newViewBoxSize)
+  }, [viewBoxSize, content])
 
   return (
     <GlobalStoreContext.Provider
@@ -73,8 +88,9 @@ export function GlobalStoreProvider({ children }: React.PropsWithChildren) {
         setBorder,
         format,
         setFormat,
-        size,
-        setSize,
+        scale,
+        setScale,
+        viewBoxSize,
         qrCodeRef,
       }}
     >

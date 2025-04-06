@@ -1,4 +1,5 @@
 "use client"
+
 import CodeBracketIcon from "@heroicons/react/24/solid/CodeBracketIcon"
 import QrCodeIconLarge from "@heroicons/react/24/solid/QrCodeIcon"
 import UserIcon from "@heroicons/react/24/solid/UserIcon"
@@ -9,7 +10,7 @@ import { Text } from "../../components/text"
 import { GlobalStoreProvider } from "../../stores/global-store"
 import { BorderOption } from "./options/border"
 import { FormatOption } from "./options/format"
-import { SizeOption } from "./options/size"
+import { ScaleOption } from "./options/scale"
 import { QRContentInput } from "./qr-content/input"
 import { QRContentPreview } from "./qr-content/preview"
 import { QRContentSave } from "./qr-content/save"
@@ -52,7 +53,7 @@ export default function Home() {
             <FieldGroup className="sm:grid grid-cols-2 items-start sm:*:last:mb-0 sm:*:nth-last-2:mb-0 sm:*:odd:pe-8 sm:*:even:ps-8 sm:*:even:border-l sm:*:even:border-zinc-950/10 sm:*:even:dark:border-white/10">
               <BorderOption />
               <FormatOption className="row-span-3" />
-              <SizeOption />
+              <ScaleOption />
             </FieldGroup>
           </Fieldset>
         </GlobalStoreProvider>
