@@ -21,11 +21,15 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/bun": "^1.2.9",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
     "type-fest": "^4.37.0",
     "typescript": "^5"
-  }
+  },
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "sharp"
+  ]
 }
