@@ -6,8 +6,9 @@ import { useMemo } from "react"
 import { Description, Field, Label } from "../../../components/fieldset"
 import { Input, InputGroup } from "../../../components/input"
 import { Strong } from "../../../components/text"
-import { useGlobalStore } from "../../../stores/global-store"
-import { calcSize } from "../../../utils/calcSize"
+import { ImageMimeType } from "../../../config/mime-types.ts"
+import { useQR } from "../../../contexts/qr.tsx"
+import { useSettings } from "../../../contexts/settings.tsx"
 
 type SizeOptionProps = Omit<
   React.ComponentPropsWithoutRef<typeof Field>,
@@ -15,14 +16,12 @@ type SizeOptionProps = Omit<
 >
 
 export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
-  const { border, format, scale, setScale, viewBoxSize } = useGlobalStore()
+  const { format, scale, setScale } = useSettings()
+  const { canvasRef } = useQR()
 
   const finalSizeString = useMemo(
-    () =>
-      (
-        calcSize(viewBoxSize || 21, { border }).totalSize * scale
-      ).toLocaleString(),
-    [viewBoxSize, border, scale],
+    () => (canvasRef.current?.width ?? 21 * scale).toLocaleString(),
+    [canvasRef.current, scale],
   )
 
   // Split user input from app value to allow clearing the field.
@@ -46,7 +45,7 @@ export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
   )
 
   return (
-    <Field {...rest} disabled={disabled || format === "image/svg+xml"}>
+    <Field {...rest} disabled={disabled || format === ImageMimeType.svg}>
       <Label>Scale factor</Label>
       <Description>Size scaling for export.</Description>
       <InputGroup>

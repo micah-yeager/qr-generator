@@ -1,5 +1,6 @@
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon"
 import type React from "react"
+import { useEffect } from "react"
 import { useState } from "react"
 import { DebounceInput } from "react-debounce-input"
 import {
@@ -14,7 +15,8 @@ import {
   Label,
 } from "../../../components/fieldset"
 import { Textarea } from "../../../components/textarea"
-import { useGlobalStore } from "../../../stores/global-store"
+import { useQR } from "../../../contexts/qr.tsx"
+import { useSettings } from "../../../contexts/settings.tsx"
 import { Mail, MailDropdownItem } from "../templates/mail"
 import { Phone, PhoneDropdownItem } from "../templates/phone"
 import { Wifi, WifiDropdownItem } from "../templates/wifi"
@@ -25,12 +27,22 @@ type QRContentInputProps = Omit<
 >
 
 export function QRContentInput(props: QRContentInputProps) {
-  const { content, setContent, prevContent, setPrevContent } = useGlobalStore()
+  const { border, content, setContent, scale } = useSettings()
+  const { workerRef } = useQR()
 
   // Dialog states
   const [mailDialogOpen, setMailDialogOpen] = useState<boolean>(false)
   const [phoneDialogOpen, setPhoneDialogOpen] = useState<boolean>(false)
   const [wifiDialogOpen, setWifiDialogOpen] = useState<boolean>(false)
+
+  useEffect(() => {
+    // Skip rendering if an empty string to avoid shifts while transitioning.
+    if (!workerRef.current || content === "") return
+
+    workerRef.current
+      .draw({ content, encodeOpts: { border, scale } })
+      .catch(console.error)
+  }, [border, content, scale, workerRef.current])
 
   return (
     <>
@@ -45,11 +57,7 @@ export function QRContentInput(props: QRContentInputProps) {
               rows={1}
               placeholder="e.g. https://qr.micahyeager.com/"
               value={content}
-              onChange={(e) => {
-                // Ensure duplicate events don't inadvertently overwrite the previous value.
-                if (content !== prevContent) setPrevContent(content)
-                setContent(e.target.value)
-              }}
+              onChange={(e) => setContent(e.target.value)}
               debounceTimeout={100}
               forceNotifyOnBlur={true}
               forceNotifyByEnter={true}

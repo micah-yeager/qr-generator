@@ -1,7 +1,7 @@
 import type React from "react"
 import { Description, Label } from "../../../components/fieldset"
 import { Switch, SwitchField } from "../../../components/switch"
-import { useGlobalStore } from "../../../stores/global-store"
+import { useSettings } from "../../../contexts/settings.tsx"
 
 type BorderOptionProps = Omit<
   React.ComponentPropsWithoutRef<typeof SwitchField>,
@@ -9,7 +9,7 @@ type BorderOptionProps = Omit<
 >
 
 export function BorderOption(props: BorderOptionProps) {
-  const { border, setBorder } = useGlobalStore()
+  const { border, setBorder } = useSettings()
 
   return (
     <SwitchField {...props}>

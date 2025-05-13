@@ -7,7 +7,8 @@ import { Divider } from "../../components/divider"
 import { FieldGroup, Fieldset, Legend } from "../../components/fieldset"
 import { Heading } from "../../components/heading"
 import { Text } from "../../components/text"
-import { GlobalStoreProvider } from "../../stores/global-store"
+import { QRProvider } from "../../contexts/qr.tsx"
+import { SettingsProvider } from "../../contexts/settings.tsx"
 import { BorderOption } from "./options/border"
 import { FormatOption } from "./options/format"
 import { ScaleOption } from "./options/scale"
@@ -36,27 +37,31 @@ export default function Home() {
         id="input"
         className="flex flex-col gap-[32px] w-full sm:max-w-[600px] row-start-2 items-center sm:items-start"
       >
-        <GlobalStoreProvider>
-          <QRContentInput className="w-full" />
+        <SettingsProvider>
+          <QRProvider>
+            <QRContentInput className="w-full" />
 
-          <div className="w-full flex flex-col gap-2 items-center">
-            <QRContentPreview className="size-64" />
-            <QRContentSave className="text-center space-x-2 *:w-31" />
-          </div>
+            <div className="w-full flex flex-col gap-2 items-center">
+              <QRContentPreview className="size-64" />
+              <QRContentSave className="text-center space-x-2 *:w-31" />
+            </div>
 
-          <Divider />
+            <Divider />
 
-          <Fieldset>
-            <Legend>Options</Legend>
-            <Text>If in doubt, you can safely leave these options alone.</Text>
+            <Fieldset className="w-full">
+              <Legend>Options</Legend>
+              <Text>
+                If in doubt, you can safely leave these options alone.
+              </Text>
 
-            <FieldGroup className="sm:grid grid-cols-2 items-start sm:*:last:mb-0 sm:*:nth-last-2:mb-0 sm:*:odd:pe-8 sm:*:even:ps-8 sm:*:even:border-l sm:*:even:border-zinc-950/10 sm:*:even:dark:border-white/10">
-              <BorderOption />
-              <FormatOption className="row-span-3" />
-              <ScaleOption />
-            </FieldGroup>
-          </Fieldset>
-        </GlobalStoreProvider>
+              <FieldGroup className="sm:grid grid-cols-2 items-start sm:*:last:mb-0 sm:*:nth-last-2:mb-0 sm:*:odd:pe-8 sm:*:even:ps-8 sm:*:even:border-l sm:*:even:border-zinc-950/10 sm:*:even:dark:border-white/10">
+                <BorderOption />
+                <FormatOption className="row-span-3" />
+                <ScaleOption />
+              </FieldGroup>
+            </Fieldset>
+          </QRProvider>
+        </SettingsProvider>
       </form>
 
       <footer className="space-y-4">
