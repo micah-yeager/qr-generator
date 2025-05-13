@@ -1,9 +1,9 @@
 import clsx from "clsx"
 import type React from "react"
-import QRCode from "react-qr-code"
 import type { SetRequired } from "type-fest"
 import { Text } from "../../../components/text"
-import { useGlobalStore } from "../../../stores/global-store"
+import { useQR } from "../../../contexts/qr.tsx"
+import { useSettings } from "../../../contexts/settings.tsx"
 
 /**
  * Props for {@link QRContentPreview}.
@@ -26,7 +26,8 @@ export function QRContentPreview({
   className,
   ...rest
 }: QRContentPreviewProps) {
-  const { content, prevContent, qrCodeRef } = useGlobalStore()
+  const { content } = useSettings()
+  const { canvasRef } = useQR()
 
   return (
     <div
@@ -38,24 +39,21 @@ export function QRContentPreview({
     >
       <div
         className={clsx(
-          "p-3 bg-white select-none starting:opacity-0",
+          "overflow-clip bg-white select-none starting:opacity-0",
           content ? "opacity-100 scale-100" : "opacity-0 scale-95",
         )}
       >
-        <QRCode
-          className="h-full w-full"
-          // Fall back to previous value if current value is "". This prevents changes as it's fading out, which looks odd.
-          value={content || prevContent}
+        <canvas
+          className="h-full w-full pointer-events-none"
           aria-label="QR code preview."
-          // biome-ignore lint/suspicious/noExplicitAny: Cast is needed due to missing types.
-          ref={qrCodeRef as React.RefObject<any>}
+          ref={canvasRef}
         />
       </div>
 
       <Text
         className={clsx(
           "flex justify-center items-center p-10 text-center border-zinc-950/10 dark:border-white/10 border-1 border-dashed",
-          content ? "opacity-0 scale-95" : "opacity-100 scale-100",
+          content ? "opacity-0 scale-95 invisible" : "opacity-100 scale-100",
         )}
       >
         Enter text above to generate the QR code.
