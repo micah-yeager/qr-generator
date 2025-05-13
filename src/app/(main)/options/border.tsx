@@ -14,7 +14,7 @@ export function BorderOption(props: BorderOptionProps) {
   return (
     <SwitchField {...props}>
       <Label>Include white border</Label>
-      <Description>Recommended</Description>
+      <Description>Recommended.</Description>
       <Switch checked={border} onChange={setBorder} />
     </SwitchField>
   )
