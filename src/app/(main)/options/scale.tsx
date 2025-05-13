@@ -1,5 +1,7 @@
 import ArrowsPointingOutIcon from "@heroicons/react/16/solid/ArrowsPointingOutIcon"
 import type React from "react"
+import { useEffect } from "react"
+import { useRef } from "react"
 import { useCallback } from "react"
 import { useState } from "react"
 import { Description, Field, Label } from "../../../components/fieldset"
@@ -15,6 +17,8 @@ type SizeOptionProps = Omit<
 >
 
 export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
+  const inputRef = useRef<HTMLInputElement>(null)
+
   const { content, format, scale, setScale } = useSettings()
   const { size } = useQR()
 
@@ -31,9 +35,14 @@ export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
     [setScale],
   )
 
-  const syncInput = useCallback(() => {
+  // Ensure current state is synced back to the input field.
+  const syncState = useCallback(() => {
     setUserInput(String(scale))
   }, [scale])
+  useEffect(() => {
+    if (!inputRef.current || document.activeElement === inputRef.current) return
+    syncState()
+  }, [syncState])
 
   return (
     <Field {...rest} disabled={disabled || format === ImageMimeType.svg}>
@@ -50,7 +59,8 @@ export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
             setUserInput(e.target.value)
             updateScale(e.target.value)
           }}
-          onBlur={() => syncInput()}
+          onBlur={() => syncState()}
+          ref={inputRef}
         />
       </InputGroup>
       {content && (

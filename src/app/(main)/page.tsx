@@ -4,14 +4,11 @@ import CodeBracketIcon from "@heroicons/react/24/solid/CodeBracketIcon"
 import QrCodeIconLarge from "@heroicons/react/24/solid/QrCodeIcon"
 import UserIcon from "@heroicons/react/24/solid/UserIcon"
 import { Divider } from "../../components/divider"
-import { FieldGroup, Fieldset, Legend } from "../../components/fieldset"
 import { Heading } from "../../components/heading"
 import { Text } from "../../components/text"
 import { QRProvider } from "../../contexts/qr.tsx"
 import { SettingsProvider } from "../../contexts/settings.tsx"
-import { BorderOption } from "./options/border"
-import { FormatOption } from "./options/format"
-import { ScaleOption } from "./options/scale"
+import { QROptions } from "./options"
 import { QRContentInput } from "./qr-content/input"
 import { QRContentPreview } from "./qr-content/preview"
 import { QRContentSave } from "./qr-content/save"
@@ -49,18 +46,7 @@ export default function Home() {
 
             <Divider />
 
-            <Fieldset className="w-full">
-              <Legend>Options</Legend>
-              <Text>
-                If in doubt, you can safely leave these options alone.
-              </Text>
-
-              <FieldGroup className="sm:grid grid-cols-2 items-start sm:*:last:mb-0 sm:*:nth-last-2:mb-0 sm:*:odd:pe-8 sm:*:even:ps-8 sm:*:even:border-l sm:*:even:border-zinc-950/10 sm:*:even:dark:border-white/10">
-                <BorderOption />
-                <FormatOption className="row-span-3" />
-                <ScaleOption />
-              </FieldGroup>
-            </Fieldset>
+            <QROptions className="w-full" />
           </QRProvider>
         </SettingsProvider>
       </form>

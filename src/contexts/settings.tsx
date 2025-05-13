@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useCallback, useContext, useState } from "react"
 import type React from "react"
 import {
   DEFAULT_BORDER,
@@ -22,6 +22,7 @@ export type Settings = {
   /** The scale to export a rasterized image as. */
   scale: number
   setScale: (size: number) => void
+  resetToDefaults: () => void
 }
 
 const SettingsContext = createContext<Settings | null>(null)
@@ -53,6 +54,12 @@ export function SettingsProvider({ children }: React.PropsWithChildren) {
   // Transient states.
   const [content, setContent] = useState<string>("")
 
+  const resetToDefaults = useCallback(() => {
+    setBorder(DEFAULT_BORDER)
+    setFormat(DEFAULT_FORMAT)
+    setScale(DEFAULT_SCALE)
+  }, [setBorder, setFormat, setScale])
+
   return (
     <SettingsContext.Provider
       value={{
@@ -64,6 +71,7 @@ export function SettingsProvider({ children }: React.PropsWithChildren) {
         setFormat,
         scale,
         setScale,
+        resetToDefaults,
       }}
     >
       {children}
