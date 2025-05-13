@@ -113,9 +113,3 @@ export function QRProvider({ children }: React.PropsWithChildren) {
     </QRContext>
   )
 }
-
-function newBooleanMapForImageMimeTypes(): Map<ImageMimeType, boolean> {
-  return new Map(
-    Object.values(ImageMimeType).map((mimeType) => [mimeType, true]),
-  )
-}
