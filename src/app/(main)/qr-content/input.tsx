@@ -1,6 +1,5 @@
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon"
 import type React from "react"
-import { useEffect } from "react"
 import { useState } from "react"
 import { DebounceInput } from "react-debounce-input"
 import {
@@ -15,7 +14,6 @@ import {
   Label,
 } from "../../../components/fieldset"
 import { Textarea } from "../../../components/textarea"
-import { useQR } from "../../../contexts/qr.tsx"
 import { useSettings } from "../../../contexts/settings.tsx"
 import { Mail, MailDropdownItem } from "../templates/mail"
 import { Phone, PhoneDropdownItem } from "../templates/phone"
@@ -27,22 +25,12 @@ type QRContentInputProps = Omit<
 >
 
 export function QRContentInput(props: QRContentInputProps) {
-  const { border, content, setContent, scale } = useSettings()
-  const { workerRef } = useQR()
+  const { content, setContent } = useSettings()
 
   // Dialog states
   const [mailDialogOpen, setMailDialogOpen] = useState<boolean>(false)
   const [phoneDialogOpen, setPhoneDialogOpen] = useState<boolean>(false)
   const [wifiDialogOpen, setWifiDialogOpen] = useState<boolean>(false)
-
-  useEffect(() => {
-    // Skip rendering if an empty string to avoid shifts while transitioning.
-    if (!workerRef.current || content === "") return
-
-    workerRef.current
-      .draw({ content, encodeOpts: { border, scale } })
-      .catch(console.error)
-  }, [border, content, scale, workerRef.current])
 
   return (
     <>

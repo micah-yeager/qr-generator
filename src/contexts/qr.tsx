@@ -10,6 +10,7 @@ import {
 } from "../config/app-defaults.ts"
 import { ImageMimeType } from "../config/mime-types.ts"
 import type { QRCanvasHandler } from "../workers/qr-canvas-handler.ts"
+import { useSettings } from "./settings.tsx"
 
 type ProxiedWorker = Comlink.Remote<QRCanvasHandler>
 type QR = {
@@ -28,8 +29,9 @@ export const useQR = (): QR =>
   useContext(QRContext as React.Context<QR>)
 
 export function QRProvider({ children }: React.PropsWithChildren) {
-  const mutationObserverRef = useRef<MutationObserver>(null)
+  const { content, border, scale } = useSettings()
 
+  const mutationObserverRef = useRef<MutationObserver>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const workerRef = useRef<ProxiedWorker>(null)
 
@@ -126,6 +128,16 @@ export function QRProvider({ children }: React.PropsWithChildren) {
       console.warn("Failed to re-transfer an already-transferred canvas.")
     }
   }, [canvasRef.current, workerRef.current])
+
+  // Render on input or settings change.
+  useEffect(() => {
+    // Skip rendering if an empty string to avoid shifts while transitioning.
+    if (!workerRef.current || content === "") return
+
+    workerRef.current
+      .draw({ content, encodeOpts: { border, scale } })
+      .catch(console.error)
+  }, [border, content, scale])
 
   return (
     <QRContext
