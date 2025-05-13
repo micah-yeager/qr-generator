@@ -11,8 +11,6 @@ import {
 import { ImageMimeType } from "../config/mime-types.ts"
 import type { QRCanvasHandler } from "../workers/qr-canvas-handler.ts"
 
-const WORKER_URL = new URL("../workers/qr-canvas-handler.ts", import.meta.url)
-
 type ProxiedWorker = Comlink.Remote<QRCanvasHandler>
 type QR = {
   canvasRef: React.RefObject<HTMLCanvasElement | null>
@@ -70,7 +68,11 @@ export function QRProvider({ children }: React.PropsWithChildren) {
 
     // Initialize worker.
     workerRef.current = Comlink.wrap<QRCanvasHandler>(
-      new Worker(WORKER_URL, { type: "module" }),
+      // Worker must be initialized all in one place, so webpack picks it up properly.
+      // https://github.com/vercel/next.js/issues/31009
+      new Worker(new URL("../workers/qr-canvas-handler.ts", import.meta.url), {
+        type: "module",
+      }),
     )
     // Worker destructor.
     return () => {
