@@ -1,0 +1,27 @@
+import clsx from "clsx"
+import type React from "react"
+import { Strong, Text } from "../../../components/text.tsx"
+import { useQR } from "../../../contexts/qr.tsx"
+import { useSettings } from "../../../contexts/settings.tsx"
+
+export function Size({
+  className,
+  ...rest
+}: React.ComponentPropsWithoutRef<typeof Text>) {
+  const { content } = useSettings()
+  const { size } = useQR()
+  return (
+    <Text
+      {...rest}
+      className={clsx(
+        "motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-in-out",
+        content
+          ? "opacity-100 scale-100 visible"
+          : "opacity-0 scale-95 invisible",
+        className,
+      )}
+    >
+      Final size: <Strong>{size} px</Strong>
+    </Text>
+  )
+}

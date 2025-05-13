@@ -6,9 +6,7 @@ import { useCallback } from "react"
 import { useState } from "react"
 import { Description, Field, Label } from "../../../components/fieldset"
 import { Input, InputGroup } from "../../../components/input"
-import { Strong } from "../../../components/text"
 import { ImageMimeType } from "../../../config/mime-types.ts"
-import { useQR } from "../../../contexts/qr.tsx"
 import { useSettings } from "../../../contexts/settings.tsx"
 
 type SizeOptionProps = Omit<
@@ -19,8 +17,7 @@ type SizeOptionProps = Omit<
 export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const { content, format, scale, setScale } = useSettings()
-  const { size } = useQR()
+  const { format, scale, setScale } = useSettings()
 
   // Split user input from app value to allow clearing the field.
   const [userInput, setUserInput] = useState<string>(String(scale))
@@ -63,11 +60,6 @@ export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
           ref={inputRef}
         />
       </InputGroup>
-      {content && (
-        <Description>
-          Final size: <Strong>{size} px</Strong>
-        </Description>
-      )}
     </Field>
   )
 }
