@@ -15,7 +15,7 @@ type SizeOptionProps = Omit<
 >
 
 export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
-  const { format, scale, setScale } = useSettings()
+  const { content, format, scale, setScale } = useSettings()
   const { size } = useQR()
 
   // Split user input from app value to allow clearing the field.
@@ -53,9 +53,11 @@ export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
           onBlur={() => syncInput()}
         />
       </InputGroup>
-      <Description>
-        Final size: <Strong>{size} px</Strong>
-      </Description>
+      {content && (
+        <Description>
+          Final size: <Strong>{size} px</Strong>
+        </Description>
+      )}
     </Field>
   )
 }
