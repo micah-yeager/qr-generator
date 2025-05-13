@@ -36,7 +36,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       // Basic layout
       "relative block col-start-1 col-end-2 row-start-1 row-end-2 h-full w-full appearance-none rounded-lg px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2.5)-1px)] sm:px-[calc(--spacing(3)-1px)] sm:py-[calc(--spacing(1.5)-1px)]",
       // Typography
-      "text-base/6 text-zinc-950 placeholder:text-zinc-500 dark:text-white sm:text-sm/6",
+      "break-all text-base/6 text-zinc-950 placeholder:text-zinc-500 dark:text-white sm:text-sm/6",
       // Border
       "border border-zinc-950/10 data-hover:border-zinc-950/20 dark:border-white/10 dark:data-hover:border-white/20",
       // Background color
@@ -78,7 +78,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         <div
           // Mimic `textarea`'s `whitespace-pre-wrap` to ensure the
           // preview behavior matches the textarea.
-          className={clsx(classes, "invisible whitespace-pre-wrap")}
+          className={clsx(classes, "invisible")}
           aria-hidden
         >
           {value}‍
