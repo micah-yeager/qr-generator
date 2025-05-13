@@ -39,7 +39,7 @@ export function QRProvider({ children }: React.PropsWithChildren) {
   const [copyableFormats, setCopyableFormats] = useState(
     DEFAULT_COPYABLE_FORMATS,
   )
-  const [size, setSize] = useState<number>(25)
+  const [size, setSize] = useState<number>(250)
 
   // Only initialize when in the client environment.
   useEffect(() => {
