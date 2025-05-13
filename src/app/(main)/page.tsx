@@ -42,8 +42,9 @@ export default function Home() {
             <QRContentInput className="w-full" />
 
             <div className="w-full flex flex-col gap-2 items-center">
-              <QRContentPreview className="size-64" />
-              <QRContentSave className="text-center space-x-2 *:w-31" />
+              <QRContentPreview className="size-[250px]" />
+              {/* `w-[250px]` would be more accurate, but this looks better. */}
+              <QRContentSave className="w-[252px]" />
             </div>
 
             <Divider />

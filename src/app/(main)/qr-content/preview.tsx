@@ -39,12 +39,12 @@ export function QRContentPreview({
     >
       <div
         className={clsx(
-          "overflow-clip bg-white select-none starting:opacity-0",
-          content ? "opacity-100 scale-100" : "opacity-0 scale-95",
+          "flex justify-center items-center overflow-clip select-none starting:opacity-0",
+          content ? "opacity-100 scale-100" : "opacity-0 scale-95 invisible",
         )}
       >
         <canvas
-          className="h-full w-full pointer-events-none"
+          className="max-h-full max-w-full flex-initial"
           aria-label="QR code preview."
           ref={canvasRef}
         />

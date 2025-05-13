@@ -1,5 +1,6 @@
 import ArrowDownTrayIcon from "@heroicons/react/24/solid/ArrowDownTrayIcon"
 import ClipboardDocumentIcon from "@heroicons/react/24/solid/ClipboardDocumentIcon"
+import clsx from "clsx"
 import type React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { Button } from "../../../components/button"
@@ -30,7 +31,7 @@ type QRContentSaveProps = Omit<
   "children"
 >
 
-export function QRContentSave(props: QRContentSaveProps) {
+export function QRContentSave({ className, ...rest }: QRContentSaveProps) {
   const { content, border, format, scale } = useSettings()
   const { copyableFormats, workerRef } = useQR()
 
@@ -84,7 +85,7 @@ export function QRContentSave(props: QRContentSaveProps) {
   }, [format, renderToArrayBuffer])
 
   return (
-    <div {...props}>
+    <div {...rest} className={clsx(className, "grid grid-cols-2 gap-x-2")}>
       <Button
         type="button"
         className="self-center"
