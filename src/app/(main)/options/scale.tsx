@@ -43,8 +43,11 @@ export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
 
   return (
     <Field {...rest} disabled={disabled || format === ImageMimeType.svg}>
-      <Label>Scale factor</Label>
-      <Description>Size scaling for export.</Description>
+      <Label>Scaling</Label>
+      <Description>
+        By default, QR codes are generated as small as possible — use this value
+        to increase the final image size.
+      </Description>
       <InputGroup>
         <ArrowsPointingOutIcon />
         <Input
