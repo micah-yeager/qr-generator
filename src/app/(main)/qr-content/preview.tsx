@@ -40,7 +40,9 @@ export function QRContentPreview({
       <div
         className={clsx(
           "flex justify-center items-center overflow-clip select-none starting:opacity-0",
-          content ? "opacity-100 scale-100" : "opacity-0 scale-95 invisible",
+          content
+            ? "opacity-100 scale-100 visible"
+            : "opacity-0 scale-95 invisible",
         )}
       >
         <canvas
@@ -53,7 +55,9 @@ export function QRContentPreview({
       <Text
         className={clsx(
           "flex justify-center items-center p-10 text-center border-zinc-950/10 dark:border-white/10 border-1 border-dashed",
-          content ? "opacity-0 scale-95 invisible" : "opacity-100 scale-100",
+          content
+            ? "opacity-0 scale-95 invisible"
+            : "opacity-100 scale-100 visible",
         )}
       >
         Enter text above to generate the QR code.
