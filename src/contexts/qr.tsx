@@ -29,7 +29,7 @@ export const useQR = (): QR =>
   useContext(QRContext as React.Context<QR>)
 
 export function QRProvider({ children }: React.PropsWithChildren) {
-  const { content, border, scale } = useSettings()
+  const { content, border, errorCorrection, scale } = useSettings()
 
   const mutationObserverRef = useRef<MutationObserver>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -135,9 +135,9 @@ export function QRProvider({ children }: React.PropsWithChildren) {
     if (!workerRef.current || content === "") return
 
     workerRef.current
-      .draw({ content, encodeOpts: { border, scale } })
+      .draw({ content, encodeOpts: { border, scale, ecc: errorCorrection } })
       .catch(console.error)
-  }, [border, content, scale])
+  }, [border, content, errorCorrection, scale])
 
   return (
     <QRContext

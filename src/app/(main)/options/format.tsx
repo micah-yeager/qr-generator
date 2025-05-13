@@ -31,7 +31,7 @@ export function FormatOption(props: FormatOptionProps) {
   return (
     <Fieldset {...props}>
       <Legend>Format</Legend>
-      <Text className="!mt-0">The image type to export.</Text>
+      <Text>The image type to export when saving.</Text>
       <RadioGroup
         value={format}
         onChange={(value) => setFormat(value as ImageMimeType)}

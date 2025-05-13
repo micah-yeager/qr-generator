@@ -5,6 +5,7 @@ import { Subheading } from "../../../components/heading.tsx"
 import { Text } from "../../../components/text.tsx"
 import { useSettings } from "../../../contexts/settings.tsx"
 import { BorderOption } from "./border.tsx"
+import { ErrorCorrection } from "./error-correction.tsx"
 import { FormatOption } from "./format.tsx"
 import { ScaleOption } from "./scale.tsx"
 
@@ -21,10 +22,15 @@ export function QROptions(props: ComponentPropsWithoutRef<typeof Fieldset>) {
       </div>
       <Text>If in doubt, you can safely leave these options alone.</Text>
 
-      <FieldGroup className="sm:grid grid-cols-2 items-start sm:*:last:mb-0 sm:*:nth-last-2:mb-0 sm:*:odd:pe-8 sm:*:even:ps-8 sm:*:even:border-l sm:*:even:border-zinc-950/10 sm:*:even:dark:border-white/10">
-        <BorderOption />
-        <FormatOption className="row-span-3" />
-        <ScaleOption />
+      <FieldGroup className="sm:grid *:space-y-8 grid-cols-2 items-start sm:*:odd:pe-8 sm:*:even:ps-8 sm:*:even:border-l sm:*:even:border-zinc-950/10 sm:*:even:dark:border-white/10">
+        <div>
+          <BorderOption />
+          <ErrorCorrection />
+        </div>
+        <div>
+          <FormatOption />
+          <ScaleOption />
+        </div>
       </FieldGroup>
     </Fieldset>
   )

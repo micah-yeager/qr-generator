@@ -1,7 +1,9 @@
+import type { ErrorCorrection } from "qr"
 import { createContext, useCallback, useContext, useState } from "react"
 import type React from "react"
 import {
   DEFAULT_BORDER,
+  DEFAULT_ERROR_CORRECTION,
   DEFAULT_FORMAT,
   DEFAULT_SCALE,
 } from "../config/app-defaults"
@@ -16,6 +18,9 @@ export type Settings = {
   /** Whether to include a border in the image export. */
   border: boolean
   setBorder: (value: boolean) => void
+  /** The level of error correction to allow when generating a QR code. */
+  errorCorrection: ErrorCorrection
+  setErrorCorrection: (value: ErrorCorrection) => void
   /** The image format to export as. */
   format: ImageMimeType
   setFormat: (value: ImageMimeType) => void
@@ -45,6 +50,10 @@ export const useSettings = (): Settings =>
 export function SettingsProvider({ children }: React.PropsWithChildren) {
   // Stored states.
   const [border, setBorder] = useLocalStorage<boolean>("border", DEFAULT_BORDER)
+  const [errorCorrection, setErrorCorrection] = useLocalStorage(
+    "error correction",
+    DEFAULT_ERROR_CORRECTION,
+  )
   const [format, setFormat] = useLocalStorage<ImageMimeType>(
     "format",
     DEFAULT_FORMAT,
@@ -54,11 +63,13 @@ export function SettingsProvider({ children }: React.PropsWithChildren) {
   // Transient states.
   const [content, setContent] = useState<string>("")
 
+  // Defaults
   const resetToDefaults = useCallback(() => {
     setBorder(DEFAULT_BORDER)
+    setErrorCorrection(DEFAULT_ERROR_CORRECTION)
     setFormat(DEFAULT_FORMAT)
     setScale(DEFAULT_SCALE)
-  }, [setBorder, setFormat, setScale])
+  }, [setBorder, setErrorCorrection, setFormat, setScale])
 
   return (
     <SettingsContext.Provider
@@ -67,6 +78,8 @@ export function SettingsProvider({ children }: React.PropsWithChildren) {
         setContent,
         border,
         setBorder,
+        errorCorrection,
+        setErrorCorrection,
         format,
         setFormat,
         scale,
