@@ -1,7 +1,7 @@
 import ArrowsPointingOutIcon from "@heroicons/react/16/solid/ArrowsPointingOutIcon"
 import type React from "react"
 import { useCallback } from "react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Description, Field, Label } from "../../../components/fieldset"
 import { Input, InputGroup } from "../../../components/input"
 import { Strong } from "../../../components/text"
@@ -20,23 +20,20 @@ export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
 
   // Split user input from app value to allow clearing the field.
   const [userInput, setUserInput] = useState<string>(String(scale))
-  // Update user input if `size` changes.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Only fire if `scale` changes.
-  useEffect(() => {
-    const newValue = String(scale)
-    if (newValue !== userInput) setUserInput(newValue)
-  }, [scale])
-
-  const setNormalizedSize = useCallback(
+  const updateScale = useCallback(
     (value: string) => {
+      // Sanitize input.
       const numValue = Number(value)
       const normalized = Number.isNaN(numValue) || numValue < 1 ? 1 : numValue
 
       setScale(normalized)
-      setUserInput(String(normalized))
     },
     [setScale],
   )
+
+  const syncInput = useCallback(() => {
+    setUserInput(String(scale))
+  }, [scale])
 
   return (
     <Field {...rest} disabled={disabled || format === ImageMimeType.svg}>
@@ -48,9 +45,12 @@ export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
           id="text-input"
           type="number"
           min={1}
-          value={scale}
-          onChange={(e) => setUserInput(e.target.value)}
-          onBlur={(e) => setNormalizedSize(e.target.value)}
+          value={userInput}
+          onChange={(e) => {
+            setUserInput(e.target.value)
+            updateScale(e.target.value)
+          }}
+          onBlur={() => syncInput()}
         />
       </InputGroup>
       <Description>
