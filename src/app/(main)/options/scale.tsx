@@ -2,7 +2,6 @@ import ArrowsPointingOutIcon from "@heroicons/react/16/solid/ArrowsPointingOutIc
 import type React from "react"
 import { useCallback } from "react"
 import { useEffect, useState } from "react"
-import { useMemo } from "react"
 import { Description, Field, Label } from "../../../components/fieldset"
 import { Input, InputGroup } from "../../../components/input"
 import { Strong } from "../../../components/text"
@@ -17,12 +16,7 @@ type SizeOptionProps = Omit<
 
 export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
   const { format, scale, setScale } = useSettings()
-  const { canvasRef } = useQR()
-
-  const finalSizeString = useMemo(
-    () => (canvasRef.current?.width ?? 21 * scale).toLocaleString(),
-    [canvasRef.current, scale],
-  )
+  const { size } = useQR()
 
   // Split user input from app value to allow clearing the field.
   const [userInput, setUserInput] = useState<string>(String(scale))
@@ -60,7 +54,7 @@ export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
         />
       </InputGroup>
       <Description>
-        Final size: <Strong>{finalSizeString} px</Strong>
+        Final size: <Strong>{size} px</Strong>
       </Description>
     </Field>
   )

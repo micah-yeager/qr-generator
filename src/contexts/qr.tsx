@@ -17,6 +17,7 @@ type QR = {
   workerRef: React.RefObject<ProxiedWorker | null>
   exportableFormats: Record<ImageMimeType, boolean>
   copyableFormats: Record<ImageMimeType, boolean>
+  size: number
 }
 
 const QRContext = createContext<QR | null>(null)
@@ -27,6 +28,8 @@ export const useQR = (): QR =>
   useContext(QRContext as React.Context<QR>)
 
 export function QRProvider({ children }: React.PropsWithChildren) {
+  const mutationObserverRef = useRef<MutationObserver>(null)
+
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const workerRef = useRef<ProxiedWorker>(null)
 
@@ -36,6 +39,7 @@ export function QRProvider({ children }: React.PropsWithChildren) {
   const [copyableFormats, setCopyableFormats] = useState(
     DEFAULT_COPYABLE_FORMATS,
   )
+  const [size, setSize] = useState<number>(25)
 
   // Only initialize when in the client environment.
   useEffect(() => {
@@ -80,6 +84,29 @@ export function QRProvider({ children }: React.PropsWithChildren) {
     }
   }, [])
 
+  // Set up mutation observer.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Need to re-observe if ref changes.
+  useEffect(() => {
+    if (canvasRef.current === null) return
+
+    mutationObserverRef.current = new MutationObserver((entries) => {
+      for (const entry of entries) {
+        if (
+          !("tagName" in entry.target) ||
+          entry.target.tagName !== "CANVAS" ||
+          entry.attributeName !== "width"
+        ) {
+          continue
+        }
+        setSize((entry.target as HTMLCanvasElement).width)
+        break
+      }
+    })
+    mutationObserverRef.current.observe(canvasRef.current, { attributes: true })
+
+    return () => mutationObserverRef.current?.disconnect()
+  }, [canvasRef.current])
+
   // Transfer control of the canvas to the service worker thread.
   // biome-ignore lint/correctness/useExhaustiveDependencies: Need to re-transfer if refs change.
   useEffect(() => {
@@ -107,6 +134,7 @@ export function QRProvider({ children }: React.PropsWithChildren) {
         workerRef,
         exportableFormats,
         copyableFormats,
+        size,
       }}
     >
       {children}
