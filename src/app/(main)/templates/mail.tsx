@@ -50,7 +50,7 @@ export function Mail({ open, onClose, setText, ...rest }: TemplateDialogProps) {
     if (body) params.append("body", body.replace(MESSAGE_NEWLINE_REGEX, "\r\n"))
 
     const paramsString = params.toString()
-    if (paramsString) value += `?${params.toString()}`
+    if (paramsString) value += `?${paramsString}`
     return value
   }, [to, cc, bcc, subject, body])
 
