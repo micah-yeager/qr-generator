@@ -1,7 +1,7 @@
 import type React from "react"
 import { Description, Label } from "../../../components/fieldset"
 import { Switch, SwitchField } from "../../../components/switch"
-import { useSettings } from "../../../contexts/settings.tsx"
+import { useQR } from "../../../contexts/qr.tsx"
 
 type BorderOptionProps = Omit<
   React.ComponentPropsWithoutRef<typeof SwitchField>,
@@ -9,7 +9,7 @@ type BorderOptionProps = Omit<
 >
 
 export function BorderOption(props: BorderOptionProps) {
-  const { border, setBorder } = useSettings()
+  const { border, setBorder } = useQR()
 
   return (
     <SwitchField {...props}>

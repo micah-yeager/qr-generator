@@ -1,24 +1,57 @@
 import * as Comlink from "comlink"
+import type { ErrorCorrection } from "qr"
 import type React from "react"
+import { useCallback } from "react"
 import { useState } from "react"
 import { useEffect } from "react"
 import { useContext, useRef } from "react"
 import { createContext } from "react"
 import {
+  DEFAULT_BORDER,
   DEFAULT_COPYABLE_FORMATS,
+  DEFAULT_ERROR_CORRECTION,
   DEFAULT_EXPORTABLE_FORMATS,
+  DEFAULT_FORMAT,
+  DEFAULT_SCALE,
 } from "../config/app-defaults.ts"
 import { ImageMimeType } from "../config/mime-types.ts"
+import { useLocalStorage } from "../hooks/useLocalStorage.ts"
 import type { QRCanvasHandler } from "../workers/qr-canvas-handler.ts"
-import { useSettings } from "./settings.tsx"
 
 type ProxiedWorker = Comlink.Remote<QRCanvasHandler>
 type QR = {
+  /** The canvas used to display the QR code rendering result. */
   canvasRef: React.RefObject<HTMLCanvasElement | null>
+  /** The initialized worker handling rendering. */
   workerRef: React.RefObject<ProxiedWorker | null>
+
+  /** An object containing the supported export formats in the current browser. */
   exportableFormats: Record<ImageMimeType, boolean>
+  /** An object containing the supported copy formats in the current browser. */
   copyableFormats: Record<ImageMimeType, boolean>
+
+  /** The final dimensions of the QR code after rendering. */
   size: number
+
+  /** The content used to generate a QR code. */
+  content: string
+  setContent: (value: string) => void
+
+  /** Whether to include a border in the image export. */
+  border: boolean
+  setBorder: (value: boolean) => void
+  /** The level of error correction to allow when generating a QR code. */
+  errorCorrection: ErrorCorrection
+  setErrorCorrection: (value: ErrorCorrection) => void
+  /** The image format to export as. */
+  format: ImageMimeType
+  setFormat: (value: ImageMimeType) => void
+  /** The scale to export a rasterized image as. */
+  scale: number
+  setScale: (size: number) => void
+
+  /** Resets options to their defaults. */
+  resetToDefaults: () => void
 }
 
 const QRContext = createContext<QR | null>(null)
@@ -29,7 +62,28 @@ export const useQR = (): QR =>
   useContext(QRContext as React.Context<QR>)
 
 export function QRProvider({ children }: React.PropsWithChildren) {
-  const { content, border, errorCorrection, scale } = useSettings()
+  // Stored states.
+  const [border, setBorder] = useLocalStorage<boolean>("border", DEFAULT_BORDER)
+  const [errorCorrection, setErrorCorrection] = useLocalStorage(
+    "error correction",
+    DEFAULT_ERROR_CORRECTION,
+  )
+  const [format, setFormat] = useLocalStorage<ImageMimeType>(
+    "format",
+    DEFAULT_FORMAT,
+  )
+  const [scale, setScale] = useLocalStorage<number>("scale", DEFAULT_SCALE)
+
+  // Transient states.
+  const [content, setContent] = useState<string>("")
+
+  // Defaults
+  const resetToDefaults = useCallback(() => {
+    setBorder(DEFAULT_BORDER)
+    setErrorCorrection(DEFAULT_ERROR_CORRECTION)
+    setFormat(DEFAULT_FORMAT)
+    setScale(DEFAULT_SCALE)
+  }, [setBorder, setErrorCorrection, setFormat, setScale])
 
   const mutationObserverRef = useRef<MutationObserver>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -144,9 +198,24 @@ export function QRProvider({ children }: React.PropsWithChildren) {
       value={{
         canvasRef,
         workerRef,
+
         exportableFormats,
         copyableFormats,
+
         size,
+
+        content,
+        setContent,
+        border,
+        setBorder,
+        errorCorrection,
+        setErrorCorrection,
+        format,
+        setFormat,
+        scale,
+        setScale,
+
+        resetToDefaults,
       }}
     >
       {children}

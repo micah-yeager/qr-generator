@@ -7,7 +7,7 @@ import { useState } from "react"
 import { Description, Field, Label } from "../../../components/fieldset"
 import { Input, InputGroup } from "../../../components/input"
 import { ImageMimeType } from "../../../config/mime-types.ts"
-import { useSettings } from "../../../contexts/settings.tsx"
+import { useQR } from "../../../contexts/qr.tsx"
 
 type SizeOptionProps = Omit<
   React.ComponentPropsWithoutRef<typeof Field>,
@@ -17,7 +17,7 @@ type SizeOptionProps = Omit<
 export function ScaleOption({ disabled, ...rest }: SizeOptionProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const { format, scale, setScale } = useSettings()
+  const { format, scale, setScale } = useQR()
 
   // Split user input from app value to allow clearing the field.
   const [userInput, setUserInput] = useState<string>(String(scale))

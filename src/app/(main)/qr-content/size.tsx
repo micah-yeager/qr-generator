@@ -2,7 +2,6 @@ import clsx from "clsx"
 import type React from "react"
 import { Strong, Text } from "../../../components/text.tsx"
 import { useQR } from "../../../contexts/qr.tsx"
-import { useSettings } from "../../../contexts/settings.tsx"
 
 type SizeOptionProps = Omit<
   React.ComponentPropsWithoutRef<typeof Text>,
@@ -10,8 +9,7 @@ type SizeOptionProps = Omit<
 >
 
 export function QRSize({ className, ...rest }: SizeOptionProps) {
-  const { content } = useSettings()
-  const { size } = useQR()
+  const { content, size } = useQR()
 
   return (
     <Text

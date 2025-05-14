@@ -15,7 +15,7 @@ import {
   Label,
 } from "../../../components/fieldset"
 import { Textarea } from "../../../components/textarea"
-import { useSettings } from "../../../contexts/settings.tsx"
+import { useQR } from "../../../contexts/qr.tsx"
 import { Mail, MailDropdownItem } from "../templates/mail"
 import { Phone, PhoneDropdownItem } from "../templates/phone"
 import { Wifi, WifiDropdownItem } from "../templates/wifi"
@@ -26,7 +26,7 @@ type QRContentInputProps = Omit<
 >
 
 export function QRContentInput(props: QRContentInputProps) {
-  const { content, setContent } = useSettings()
+  const { content, setContent } = useQR()
 
   // Dialog states
   const [mailDialogOpen, setMailDialogOpen] = useState<boolean>(false)

@@ -12,7 +12,6 @@ import {
   MIME_TYPE_LABEL_MAP,
 } from "../../../config/mime-types.ts"
 import { useQR } from "../../../contexts/qr.tsx"
-import { useSettings } from "../../../contexts/settings.tsx"
 
 const FORMAT_STATIC_DETAILS_MAP = new Map<ImageMimeType, React.ReactNode>([
   [ImageMimeType.jpeg, "Not recommended."],
@@ -25,8 +24,7 @@ type FormatOptionProps = Omit<
 >
 
 export function FormatOption(props: FormatOptionProps) {
-  const { format, setFormat } = useSettings()
-  const { exportableFormats } = useQR()
+  const { exportableFormats, format, setFormat } = useQR()
 
   return (
     <Fieldset {...props}>

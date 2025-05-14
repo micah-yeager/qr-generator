@@ -8,7 +8,7 @@ import {
 } from "../../../components/fieldset.tsx"
 import { Radio, RadioField, RadioGroup } from "../../../components/radio.tsx"
 import { Text } from "../../../components/text.tsx"
-import { useSettings } from "../../../contexts/settings.tsx"
+import { useQR } from "../../../contexts/qr.tsx"
 
 const ERROR_CORRECTION_MAP = new Map<
   QRErrorCorrection,
@@ -29,7 +29,7 @@ type ErrorCorrectionProps = Omit<
 >
 
 export function ErrorCorrection(props: ErrorCorrectionProps) {
-  const { errorCorrection, setErrorCorrection } = useSettings()
+  const { errorCorrection, setErrorCorrection } = useQR()
 
   return (
     <Fieldset {...props}>

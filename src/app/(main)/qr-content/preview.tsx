@@ -3,7 +3,6 @@ import type React from "react"
 import type { SetRequired } from "type-fest"
 import { Text } from "../../../components/text"
 import { useQR } from "../../../contexts/qr.tsx"
-import { useSettings } from "../../../contexts/settings.tsx"
 
 /**
  * Props for {@link QRContentPreview}.
@@ -26,8 +25,7 @@ export function QRContentPreview({
   className,
   ...rest
 }: QRContentPreviewProps) {
-  const { content } = useSettings()
-  const { canvasRef } = useQR()
+  const { canvasRef, content } = useQR()
 
   return (
     <div

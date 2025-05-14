@@ -6,7 +6,6 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { Button } from "../../../components/button"
 import { ImageMimeType, TextMimeType } from "../../../config/mime-types.ts"
 import { useQR } from "../../../contexts/qr.tsx"
-import { useSettings } from "../../../contexts/settings.tsx"
 
 /**
  * Download the provided string or blob.
@@ -32,8 +31,7 @@ type QRContentSaveProps = Omit<
 >
 
 export function QRContentSave({ className, ...rest }: QRContentSaveProps) {
-  const { content, border, format, scale } = useSettings()
-  const { copyableFormats, workerRef } = useQR()
+  const { border, content, copyableFormats, format, scale, workerRef } = useQR()
 
   // Indicator that copy was successful.
   const [showCopied, setShowCopied] = useState<boolean>(false)

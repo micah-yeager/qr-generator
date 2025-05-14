@@ -6,14 +6,14 @@ import { Button } from "../../../components/button.tsx"
 import { FieldGroup, Fieldset } from "../../../components/fieldset.tsx"
 import { Subheading } from "../../../components/heading.tsx"
 import { Text } from "../../../components/text.tsx"
-import { useSettings } from "../../../contexts/settings.tsx"
+import { useQR } from "../../../contexts/qr.tsx"
 import { BorderOption } from "./border.tsx"
 import { ErrorCorrection } from "./error-correction.tsx"
 import { FormatOption } from "./format.tsx"
 import { ScaleOption } from "./scale.tsx"
 
 export function QROptions(props: ComponentPropsWithoutRef<typeof Fieldset>) {
-  const { resetToDefaults } = useSettings()
+  const { resetToDefaults } = useQR()
 
   return (
     <Fieldset {...props}>

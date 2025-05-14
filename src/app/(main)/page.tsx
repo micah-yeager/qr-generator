@@ -7,7 +7,6 @@ import { Divider } from "../../components/divider"
 import { Heading } from "../../components/heading"
 import { Text } from "../../components/text"
 import { QRProvider } from "../../contexts/qr.tsx"
-import { SettingsProvider } from "../../contexts/settings.tsx"
 import { QROptions } from "./options"
 import { QRContentInput } from "./qr-content/input"
 import { QRContentPreview } from "./qr-content/preview"
@@ -35,22 +34,20 @@ export default function Home() {
         id="input"
         className="flex flex-col gap-[32px] w-full sm:max-w-[600px] row-start-2 items-center sm:items-start"
       >
-        <SettingsProvider>
-          <QRProvider>
-            <QRContentInput className="w-full" />
+        <QRProvider>
+          <QRContentInput className="w-full" />
 
-            <div className="w-full flex flex-col gap-2 items-center">
-              <QRContentPreview className="size-[250px]" />
-              {/* `w-[250px]` would be more accurate, but this looks better. */}
-              <QRContentSave className="w-[252px]" />
-              <QRSize />
-            </div>
+          <div className="w-full flex flex-col gap-2 items-center">
+            <QRContentPreview className="size-[250px]" />
+            {/* `w-[250px]` would be more accurate, but this looks better. */}
+            <QRContentSave className="w-[252px]" />
+            <QRSize />
+          </div>
 
-            <Divider />
+          <Divider />
 
-            <QROptions className="w-full" />
-          </QRProvider>
-        </SettingsProvider>
+          <QROptions className="w-full" />
+        </QRProvider>
       </form>
 
       <footer className="space-y-4">
