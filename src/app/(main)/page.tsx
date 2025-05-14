@@ -12,7 +12,7 @@ import { QROptions } from "./options"
 import { QRContentInput } from "./qr-content/input"
 import { QRContentPreview } from "./qr-content/preview"
 import { QRContentSave } from "./qr-content/save"
-import { Size } from "./qr-content/size.tsx"
+import { QRSize } from "./qr-content/size.tsx"
 
 export default function Home() {
   return (
@@ -43,7 +43,7 @@ export default function Home() {
               <QRContentPreview className="size-[250px]" />
               {/* `w-[250px]` would be more accurate, but this looks better. */}
               <QRContentSave className="w-[252px]" />
-              <Size />
+              <QRSize />
             </div>
 
             <Divider />

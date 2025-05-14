@@ -4,12 +4,15 @@ import { Strong, Text } from "../../../components/text.tsx"
 import { useQR } from "../../../contexts/qr.tsx"
 import { useSettings } from "../../../contexts/settings.tsx"
 
-export function Size({
-  className,
-  ...rest
-}: React.ComponentPropsWithoutRef<typeof Text>) {
+type SizeOptionProps = Omit<
+  React.ComponentPropsWithoutRef<typeof Text>,
+  "children"
+>
+
+export function QRSize({ className, ...rest }: SizeOptionProps) {
   const { content } = useSettings()
   const { size } = useQR()
+
   return (
     <Text
       {...rest}
