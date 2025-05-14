@@ -49,7 +49,6 @@ export function QRContentInput(props: QRContentInputProps) {
               onChange={(e) => setContent(e.target.value)}
               debounceTimeout={100}
               forceNotifyOnBlur={true}
-              forceNotifyByEnter={true}
             />
             <Dropdown>
               <DropdownButton
