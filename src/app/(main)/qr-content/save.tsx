@@ -31,7 +31,7 @@ type QRContentSaveProps = Omit<
 >
 
 export function QRContentSave({ className, ...rest }: QRContentSaveProps) {
-  const { border, content, copyableFormats, format, scale, workerRef } = useQR()
+  const { content, copyableFormats, exportArrayBuffer, format } = useQR()
 
   // Indicator that copy was successful.
   const [showCopied, setShowCopied] = useState<boolean>(false)
@@ -43,20 +43,6 @@ export function QRContentSave({ className, ...rest }: QRContentSaveProps) {
     timeoutRef.current = setTimeout(() => setShowCopied(false), 3_000)
   }, [showCopied])
 
-  // Use param for format to avoid re-memoization when the format changes.
-  const renderToArrayBuffer = useCallback(
-    async (format: ImageMimeType): Promise<ArrayBuffer> => {
-      if (!workerRef.current) throw new Error("Worker not initialized")
-
-      return workerRef.current.toFormat({
-        format,
-        content,
-        encodeOpts: { border, scale },
-      })
-    },
-    [border, content, scale, workerRef.current],
-  )
-
   // This function cannot be async due to restrictions within Safari.
   const writeToClipboard = useCallback((): void => {
     /*
@@ -67,7 +53,7 @@ export function QRContentSave({ className, ...rest }: QRContentSaveProps) {
       format === ImageMimeType.svg ? TextMimeType.plain : format
 
     const clipboardItem = new ClipboardItem({
-      [mimeTypeOverride]: renderToArrayBuffer(format).then(
+      [mimeTypeOverride]: exportArrayBuffer().then(
         (buffer) => new Blob([buffer], { type: mimeTypeOverride }),
       ),
     })
@@ -75,12 +61,12 @@ export function QRContentSave({ className, ...rest }: QRContentSaveProps) {
       .write([clipboardItem])
       .then(() => setShowCopied(true))
       .catch(console.error)
-  }, [format, renderToArrayBuffer])
+  }, [format, exportArrayBuffer])
 
   const download = useCallback(async () => {
-    const blob = new Blob([await renderToArrayBuffer(format)], { type: format })
+    const blob = new Blob([await exportArrayBuffer()], { type: format })
     saveFile(blob)
-  }, [format, renderToArrayBuffer])
+  }, [format, exportArrayBuffer])
 
   return (
     <div {...rest} className={clsx(className, "grid grid-cols-2 gap-x-2")}>

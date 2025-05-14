@@ -16,10 +16,23 @@ import {
 } from "../config/app-defaults.ts"
 import { ImageMimeType } from "../config/mime-types.ts"
 import { useLocalStorage } from "../hooks/useLocalStorage.ts"
-import type { QRCanvasHandler } from "../workers/qr-canvas-handler.ts"
+import type {
+  EncodeOpts,
+  QRCanvasHandler,
+} from "../workers/qr-canvas-handler.ts"
 
 type ProxiedWorker = Comlink.Remote<QRCanvasHandler>
-type QR = {
+type Options = {
+  /** Whether to include a border in the image export. */
+  border: boolean
+  /** The level of error correction to allow when generating a QR code. */
+  errorCorrection: ErrorCorrection
+  /** The image format to export as. */
+  format: ImageMimeType
+  /** The scale to export a rasterized image as. */
+  scale: number
+}
+type QR = Options & {
   /** The canvas used to display the QR code rendering result. */
   canvasRef: React.RefObject<HTMLCanvasElement | null>
   /** The initialized worker handling rendering. */
@@ -37,21 +50,14 @@ type QR = {
   content: string
   setContent: (value: string) => void
 
-  /** Whether to include a border in the image export. */
-  border: boolean
   setBorder: (value: boolean) => void
-  /** The level of error correction to allow when generating a QR code. */
-  errorCorrection: ErrorCorrection
   setErrorCorrection: (value: ErrorCorrection) => void
-  /** The image format to export as. */
-  format: ImageMimeType
   setFormat: (value: ImageMimeType) => void
-  /** The scale to export a rasterized image as. */
-  scale: number
   setScale: (size: number) => void
 
   /** Resets options to their defaults. */
   resetToDefaults: () => void
+  exportArrayBuffer: () => Promise<ArrayBuffer>
 }
 
 const QRContext = createContext<QR | null>(null)
@@ -189,9 +195,25 @@ export function QRProvider({ children }: React.PropsWithChildren) {
     if (!workerRef.current || content === "") return
 
     workerRef.current
-      .draw({ content, encodeOpts: { border, scale, ecc: errorCorrection } })
+      .draw({
+        content,
+        encodeOpts: toQROpts({ border, errorCorrection, scale }),
+      })
       .catch(console.error)
   }, [border, content, errorCorrection, scale])
+
+  // Export QR code as an ArrayBuffer for use in a Blob. Don't return a Blob
+  // directly, since we need to be able to override the MIME type easily if
+  // needed.
+  const exportArrayBuffer = useCallback(async (): Promise<ArrayBuffer> => {
+    if (!workerRef.current) throw new Error("Worker not initialized")
+
+    return workerRef.current.toFormat({
+      format,
+      content,
+      encodeOpts: toQROpts({ border, errorCorrection, scale }),
+    })
+  }, [border, content, errorCorrection, format, scale])
 
   return (
     <QRContext
@@ -216,9 +238,19 @@ export function QRProvider({ children }: React.PropsWithChildren) {
         setScale,
 
         resetToDefaults,
+        exportArrayBuffer,
       }}
     >
       {children}
     </QRContext>
   )
+}
+
+function toQROpts(opts: Omit<Options, "format">): EncodeOpts {
+  const { errorCorrection, ...rest } = opts
+
+  return {
+    ecc: errorCorrection,
+    ...rest,
+  }
 }

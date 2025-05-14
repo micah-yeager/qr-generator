@@ -4,7 +4,7 @@ import type { Merge } from "type-fest"
 import UPNG from "upng-js"
 import { ImageMimeType } from "../config/mime-types.ts"
 
-type EncodeOpts = Merge<QrOpts, { border?: boolean }>
+export type EncodeOpts = Merge<QrOpts, { border?: boolean }>
 
 type ToFormatParams =
   | {
