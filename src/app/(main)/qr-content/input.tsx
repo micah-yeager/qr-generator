@@ -1,3 +1,4 @@
+import BoltIcon from "@heroicons/react/16/solid/BoltIcon"
 import ChevronDownIcon from "@heroicons/react/24/solid/ChevronDownIcon"
 import type React from "react"
 import { useState } from "react"
@@ -55,6 +56,7 @@ export function QRContentInput(props: QRContentInputProps) {
                 outline={true}
                 className="shrink-0 w-full sm:w-auto grow-0"
               >
+                <BoltIcon />
                 Templates
                 <ChevronDownIcon />
               </DropdownButton>

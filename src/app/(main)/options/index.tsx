@@ -1,3 +1,4 @@
+import ArrowPathIcon from "@heroicons/react/16/solid/ArrowPathIcon"
 import clsx from "clsx"
 import type React from "react"
 import type { ComponentPropsWithoutRef } from "react"
@@ -19,6 +20,7 @@ export function QROptions(props: ComponentPropsWithoutRef<typeof Fieldset>) {
       <div className="relative flex justify-between items-center">
         <Subheading>Options</Subheading>
         <Button outline={true} onClick={() => resetToDefaults()}>
+          <ArrowPathIcon />
           Reset to defaults
         </Button>
       </div>
